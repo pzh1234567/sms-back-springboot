@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RestController
 public class customerController {
+    //注入mapper
     @Autowired
     customerService customerService;
     /**
@@ -29,7 +31,7 @@ public class customerController {
     }
     //    删除顾客信息
     @DeleteMapping("/deleteCustomer/{id}")
-    public Result deleteCustomer(@PathVariable Integer id){
+    public Result deleteCustomer(@PathVariable String id){
         customerService.deleteCustomer(id);
         return Result.success();
     }

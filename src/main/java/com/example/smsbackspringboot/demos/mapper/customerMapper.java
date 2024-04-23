@@ -11,17 +11,17 @@ public interface customerMapper {
     @Select("select * from t_customer where customer_id = #{id}")
     Customer selectById(String id);
     //    新增用户信息
-    @Insert("insert into `t_customer` (customer_id,password,username,role,phone,email) "+"values(#{account},#{password},#{username},#{role},#{phone},#{email})")
+    @Insert("insert into `t_customer` (customer_id,customer_name,customer_gender,customer_birth,memberStatus,integral,customer_phone, customer_createTime,customer_updateTime,customer_deleted) "+"values(#{id},#{name},#{sex},#{birth},#{status},#{integral},#{phone},#{createTime},#{updateTime},#{customerDelete})")
     void addCustomer(Customer customer);
     //    修改用户信息
-    @Update("update m_admin set account = #{account}, password = #{password}, username = #{username}, role = #{role}, phone = #{phone}, email = #{email} where id = #{id}")
+    @Update("update t_customer set customer_name = #{name}, customer_gender = #{sex}, customer_birth = #{birth}, memberStatus = #{status}, integral = #{integral}, customer_phone = #{phone} ,customer_createTime=#{createTime},customer_updateTime=#{updateTime},customer_deleted=#{customerDelete}  where id = #{id}")
     void updateById(Customer customer);
     //    删除用户信息
-    @Delete("delete from m_admin where id = #{id}")
-    void deleteById(Integer id);
+    @Delete("delete from t_customer where customer_id = #{id}")
+    void deleteById(String id);
     //    获取用户列表信息
-    @Select("select * from m_admin where account like concat('%', #{account}, '%') and username like concat('%', #{name}, '%') order by id desc ")
+    @Select("select * from t_customer where customer_id like concat('%', #{id}, '%') and customer_name like concat('%', #{name}, '%') order by id desc ")
     List<Customer> selectAll(Customer customer);
-    @Select("select * from m_admin")
+    @Select("select * from t_customer")
     List<Customer> getAll();
 }
