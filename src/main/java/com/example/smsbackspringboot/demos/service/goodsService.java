@@ -58,11 +58,9 @@ public class goodsService {
      * @param id
      * @return
      */
-    public List<Goods> getGoodById(String id) {
-        QueryWrapper<Goods> wrapper = new QueryWrapper();
-        wrapper.eq("good_id",id);
-        List<Goods> goodList = goodsMapper.selectList(wrapper);
-        return goodList;
+    public Goods getGoodById(String id) {
+        Goods goods = goodsMapper.selectById(id);
+        return goods;
     }
 
     /**

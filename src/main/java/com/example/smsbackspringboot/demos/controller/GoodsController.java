@@ -35,7 +35,6 @@ public class GoodsController {
     public Result getGoods(String goodName,Integer goodType,Integer pageNum,Integer pageSize,Integer goodStatus){
         System.out.println("111111111111goodList:1111111111111111111111111111111111111111111");
         Result result = goodsService.getGoodsList(goodName,goodType,pageNum,pageSize,goodStatus);
-        System.out.println("22222222222222222222222222222222222goodList:"+result);
         return result;
 
     }
@@ -49,8 +48,8 @@ public class GoodsController {
     @ApiOperation(value = "通过Id查询商品")
     @GetMapping("/good/getGoodById")
     public Result getGoodById(String id){
-        List<Goods> GoodsList = goodsService.getGoodById(id);
-        return Result.success(GoodsList);
+        Goods goods = goodsService.getGoodById(id);
+        return Result.success(goods);
     }
 
     @ApiOperation(value = "通过Id删除")

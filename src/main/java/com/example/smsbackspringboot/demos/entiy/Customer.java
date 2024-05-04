@@ -1,49 +1,63 @@
 package com.example.smsbackspringboot.demos.entiy;
 
+import com.baomidou.mybatisplus.annotation.*;
+
+import javax.persistence.Entity;
+
+@Entity
+@TableName("t_customer")
 public class Customer {
-    private String id;
-    private String name;
-    private int sex;
-    private String birth;
-    private int status;
+    //指定主键自增
+    @TableId(type = IdType.AUTO)
+    private  Long customerId;
+    private String customerName;
+    private int customerGender;
+    private String customerBirth;
+    private int level;
     private int integral;
-    private String phone;
-    private String createTime;
-    private String updateTime;
-    private int customerDelete;
+    private String customerPhone;
 
+    @TableField(value = "createTime")
+    private String createtime;
 
-    public String getName() {
-        return name;
+    @TableField(value = "updateTime")
+    private String updatetime;
+
+    @TableLogic(value = "0", delval = "1")
+    private int deleted;
+
+    public Long getCustomerId() {
+        return customerId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
-    public int getSex() {
-        return sex;
+    public String getCustomerName() {
+        return customerName;
     }
 
-    public void setSex(int sex) {
-        this.sex = sex;
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
-    public String getBirth() {
-        return birth;
+    public int getCustomerGender() {
+        return customerGender;
     }
 
-    public void setBirth(String birth) {
-        this.birth = birth;
+    public void setCustomerGender(int customerGender) {
+        this.customerGender = customerGender;
     }
 
-    public int getStatus() {
-        return status;
+    public String getCustomerBirth() {
+        return customerBirth;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setCustomerBirth(String customerBirth) {
+        this.customerBirth = customerBirth;
     }
+
 
     public int getIntegral() {
         return integral;
@@ -53,43 +67,59 @@ public class Customer {
         this.integral = integral;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getCustomerPhone() {
+        return customerPhone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setCustomerPhone(String customerPhone) {
+        this.customerPhone = customerPhone;
     }
 
-    public String getCreateTime() {
-        return createTime;
+    public String getCreatetime() {
+        return createtime;
     }
 
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
+    public void setCreatetime(String createtime) {
+        this.createtime = createtime;
     }
 
-    public String getUpdateTime() {
-        return updateTime;
+    public String getUpdatetime() {
+        return updatetime;
     }
 
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
+    public void setUpdatetime(String updatetime) {
+        this.updatetime = updatetime;
     }
 
-    public int getCustomerDelete() {
-        return customerDelete;
+    public int getDeleted() {
+        return deleted;
     }
 
-    public void setCustomerDelete(int customerDelete) {
-        this.customerDelete = customerDelete;
+    public void setDeleted(int deleted) {
+        this.deleted = deleted;
     }
 
-    public String getId() {
-        return id;
+    public int getLevel() {
+        return level;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "customerId=" + customerId +
+                ", customerName='" + customerName + '\'' +
+                ", customerGender=" + customerGender +
+                ", customerBirth='" + customerBirth + '\'' +
+                ", level=" + level +
+                ", integral=" + integral +
+                ", customerPhone='" + customerPhone + '\'' +
+                ", createtime='" + createtime + '\'' +
+                ", updatetime='" + updatetime + '\'' +
+                ", deleted=" + deleted +
+                '}';
     }
 }

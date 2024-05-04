@@ -3,6 +3,7 @@ package com.example.smsbackspringboot.demos.controller;
 import com.example.smsbackspringboot.demos.common.Result;
 import com.example.smsbackspringboot.demos.entiy.Customer;
 import com.example.smsbackspringboot.demos.service.customerService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,32 +15,44 @@ public class customerController {
     @Autowired
     customerService customerService;
     /**
-     * 新增顾客信息
+     * 获取顾客员列表
      */
-
-    @PostMapping("/addCustomer")
-    public Result addCustomer(@RequestBody Customer customer){
-        customerService.addCustomer(customer);
-        return Result.success();
-    }
-    //    更新顾客信息
-    @PostMapping("/updateCustomer")
-    public Result updateCustomer(@RequestBody Customer customer){
-        customerService.updateCustomer(customer);
-        return Result.success();
-
-    }
-    //    删除顾客信息
-    @DeleteMapping("/deleteCustomer/{id}")
-    public Result deleteCustomer(@PathVariable String id){
-        customerService.deleteCustomer(id);
-        return Result.success();
+    @ApiOperation(value = "获取会员列表")
+    @GetMapping("/customer/getCustomer")
+    public Result getCustomer(Integer level, String name, Integer pageNum, Integer pageSize){
+        Result result =customerService.getCustomerList(level,name, pageNum,pageSize);
+        return result;
     }
 
-    //    获取顾客员列表
-    @GetMapping("/getCustomer")
-    public Result getCustomer(){
-        List<Customer> customerList=customerService.getCustomer();
-        return Result.success(customerList);
+    /**
+     * 更新顾客信息
+     */
+    @ApiOperation(value = "更新会员信息")
+    @PutMapping("/customer/updateCustomer")
+    public Result UpdataCustomerInfoById(@RequestBody Customer customer){
+        System.out.println("customerList:"+customer);
+        Result result =customerService.updateCustomerInfoById(customer);
+        return result;
+    }
+
+    /**
+     * 添加会员信息
+     */
+    @ApiOperation(value = "更新会员信息")
+    @PostMapping("/customer/addCustomer")
+    public Result addCustomerInfo(@RequestBody Customer customer){
+        System.out.println("customerList:"+customer);
+        Result result =customerService.addCustomerInfo(customer);
+        return result;
+    }
+
+    /**
+     * 删除会员信息
+     */
+    @ApiOperation(value = "删除会员信息")
+    @DeleteMapping("/customer/deleteCustomer/{id}")
+    public Result deleteCustomerInfo(@PathVariable Long id){
+        Result result =customerService.deletedCustomerById(id);
+        return result;
     }
 }

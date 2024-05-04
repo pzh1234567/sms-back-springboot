@@ -47,6 +47,12 @@ public class menuService {
         return menuModifyVo;
     }
 
+    /**
+     * 创建菜单树
+     * @param menus
+     * @param level
+     * @return
+     */
     private List<MenuLabelVo> builderLabelMenuTree(List<MenuLabelVo> menus, int level) {
         List<MenuLabelVo> menuTree = menus.stream()
                 .filter(menu -> Objects.equals(menu.getMenuLevel(), level))
@@ -55,6 +61,12 @@ public class menuService {
         return menuTree;
     }
 
+    /**
+     * 创建子级菜单
+     * @param menu
+     * @param menus
+     * @return
+     */
     private List<MenuLabelVo> getMenusChildren(MenuLabelVo menu, List<MenuLabelVo> menus) {
         List<MenuLabelVo> childrenList = menus.stream()
 //                .filter(m -> m.getParentId().equals(menu.getMenuId()))
