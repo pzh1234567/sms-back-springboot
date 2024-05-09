@@ -41,12 +41,19 @@ public class bulltinService {
         return Result.success(count);
     };
 
+
     /**
-     * 根据Id编辑公告
+     * 编辑公告信息
+     * @param bulletin
+     * @return
      */
     public Result updateBulletinInfoById(Bulletin bulletin){
         int count = bulletinMapper.updateById(bulletin);
-        return Result.success(count);
+        if(count == 1){
+            return Result.success(count);
+        }else {
+            return Result.success("编辑公告信息失败");
+        }
     }
 
     /**
@@ -54,6 +61,10 @@ public class bulltinService {
      */
     public Result addBulletinInfo(Bulletin bulletin){
         int count = bulletinMapper.insert(bulletin);
-        return Result.success(count);
+        if(count == 1){
+            return Result.success(count);
+        }else {
+            return Result.success("添加公告信息失败");
+        }
     }
 }

@@ -55,4 +55,14 @@ public class customerController {
         Result result =customerService.deletedCustomerById(id);
         return result;
     }
+
+    /**
+     * 根据会员电话查找会员
+     */
+    @ApiOperation(value = "根据会员电话查找会员信息")
+    @GetMapping("/customer/getCustomerInfoByPhone/{phone}")
+    public Result getCustomerInfoByPhone(@PathVariable String phone){
+        Customer customer = customerService.getCustomerByPhone(phone);
+        return Result.success(customer);
+    }
 }

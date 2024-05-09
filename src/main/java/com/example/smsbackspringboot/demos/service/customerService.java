@@ -1,6 +1,7 @@
 package com.example.smsbackspringboot.demos.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.smsbackspringboot.demos.common.Result;
@@ -80,6 +81,7 @@ public class customerService {
     public Result addCustomerInfo(Customer customer) {
         System.out.println("1111111");
         int count = customerMapper.insert(customer);
+        System.out.println(customer.getCustomerId());
         return Result.success(count);
     }
 
@@ -90,5 +92,18 @@ public class customerService {
         int count = customerMapper.deleteById(id);
         return Result.success(count);
     };
+
+    /**
+     * 根据会员电话查找会员信息
+     * @param phone
+     * @return
+     */
+    public Customer getCustomerByPhone(String phone){
+        LambdaQueryWrapper<Customer> wrapper=new LambdaQueryWrapper<>();
+        wrapper.eq(phone!=null,Customer::getCustomerPhone,phone);
+        Customer customer = customerMapper.selectOne(wrapper);
+        return customer;
+    };
+
 
 }

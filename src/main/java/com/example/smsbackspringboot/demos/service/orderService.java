@@ -124,4 +124,14 @@ public class orderService {
         Goods goods = goodsMapper.selectById(id);
         return goods;
     }
+
+    /**
+     * 添加订单
+     * @param order
+     * @return
+     */
+    public Long addOrder(Order order){
+        int count = orderMapper.insert(order);
+        return order.getOrderId();
+    }
 }
