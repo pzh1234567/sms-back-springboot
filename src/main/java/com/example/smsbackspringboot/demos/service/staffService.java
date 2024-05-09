@@ -4,58 +4,153 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.smsbackspringboot.demos.common.Result;
+import com.example.smsbackspringboot.demos.entiy.Role;
 import com.example.smsbackspringboot.demos.entiy.Staff;
+import com.example.smsbackspringboot.demos.entiy.StaffRole;
 import com.example.smsbackspringboot.demos.exception.CustomException;
+import com.example.smsbackspringboot.demos.mapper.roleMapper;
 import com.example.smsbackspringboot.demos.mapper.staffMapper;
+import com.example.smsbackspringboot.demos.mapper.staffRoleMapper;
+import com.example.smsbackspringboot.demos.util.BeanCopyUtils;
 import com.example.smsbackspringboot.demos.vo.commom.PageVo;
+import com.example.smsbackspringboot.demos.vo.param.AddStaffParam;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class staffService {
     @Resource
     staffMapper staffMapper;
 
+    @Resource
+    staffRoleMapper staffRoleMapper;
+
     /**
-     * 功能：查询员工列表
-     **/
-    public Result getStaffList(String name, Integer gender, Integer pageNum, Integer pageSize) {
-        LambdaQueryWrapper<Staff> wrapper=new LambdaQueryWrapper<>();
-        wrapper.like(name!=null,Staff::getName,name);
-        wrapper.eq(gender!=null,Staff::getGender,gender);
-//        wrapper.like(goodName!=null,Staff::getGoodName,goodName);
+     * 查询员工信息
+     * @param roleId
+     * @param name
+     * @param gender
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+
+    public Result getStaffList(Long roleId, String name, Integer gender, Integer pageNum, Integer pageSize){
+        LambdaQueryWrapper<StaffRole> staffRoleWrapper=new LambdaQueryWrapper<>();
+        staffRoleWrapper.eq(roleId!=null,StaffRole::getRoleId, roleId);
+        List<StaffRole> staffRoleList = staffRoleMapper.selectList(staffRoleWrapper);
+        List<Long> staffIdList = new ArrayList<>();
+        for (StaffRole staffRole: staffRoleList){
+            staffIdList.add(staffRole.getStaffId());
+        }
+        LambdaQueryWrapper<Staff> staffWrapper=new LambdaQueryWrapper<>();
+        staffWrapper.like(name!=null,Staff::getName,name);
+        staffWrapper.eq(gender!=null,Staff::getGender,gender);
+        staffWrapper.in(staffIdList.size()!=0,Staff::getId,staffIdList);
         Page<Staff> page = new Page<Staff>(pageNum,pageSize);
 //        System.out.println("2222222"+goodType);
-        IPage<Staff> staffIPage = staffMapper.selectPage(page, wrapper);
+        IPage<Staff> staffIPage = staffMapper.selectPage(page, staffWrapper);
         List<Staff> result = staffIPage.getRecords();
         System.out.println(result);
-        return Result.success(new PageVo(staffIPage.getRecords(),staffIPage.getTotal()));
+        List<AddStaffParam> addStaffParamsList = getStaffInfoList(result);
+        return Result.success(new PageVo(addStaffParamsList,staffIPage.getTotal()));
     }
+
+
+    /**
+     * 根据staff信息获取对应的角色名称
+     * @param staffList
+     * @return
+     */
+    public List<AddStaffParam> getStaffInfoList(List<Staff>  staffList){
+        List<AddStaffParam> addStaffParamsList = new ArrayList<>();
+        for (Staff staff: staffList){
+//            AddStaffParam addStaffParam = new AddStaffParam();
+            Long staffId = staff.getId();
+            LambdaQueryWrapper<StaffRole> wrapper=new LambdaQueryWrapper<>();
+            wrapper.eq(staffId!=null, StaffRole::getStaffId,staffId);
+            StaffRole staffRole = staffRoleMapper.selectOne(wrapper);
+            Long roleId = staffRole.getRoleId();
+            AddStaffParam addStaffParam = BeanCopyUtils.copyBean(staff,AddStaffParam.class);
+            addStaffParam.setRoleId(roleId);
+            addStaffParamsList.add(addStaffParam);
+        }
+        return addStaffParamsList;
+    }
+
 
     /**
      * 根据Id删除员工
      */
-    public Result deletedStaffById(Long id){
+    public int deletedStaffById(Long id){
         int count = staffMapper.deleteById(id);
-        return Result.success(count);
+        int flag = deletedStaffRoleByStaffId(id);
+        return count*flag;
     };
+
+    public int deletedStaffRoleByStaffId(Long staffId){
+        LambdaQueryWrapper<StaffRole> wrapper=new LambdaQueryWrapper<>();
+        wrapper.eq(staffId!=null,StaffRole::getStaffId,staffId);
+        int flag = staffRoleMapper.delete(wrapper);
+        return flag;
+    }
 
     /**
      * 根据Id编辑员工
      */
-    public Result updateStaffInfoById(Staff staff){
+    public int updateStaffInfoById(AddStaffParam addStaffParam){
+        Staff staff = BeanCopyUtils.copyBean(addStaffParam,Staff.class);
         int count = staffMapper.updateById(staff);
-        return Result.success(count);
+        int flag = updateStaffRoleByStaffId(addStaffParam.getId(),addStaffParam.getRoleId());
+        System.out.println(count);
+        return flag*count;
+    }
+
+    /**
+     * 编辑staffRole数据
+     * @param staffId
+     * @param roleId
+     * @return
+     */
+    public int updateStaffRoleByStaffId(Long staffId, Long roleId){
+        LambdaQueryWrapper<StaffRole> wrapper=new LambdaQueryWrapper<>();
+        wrapper.eq(staffId!=null,StaffRole::getStaffId,staffId);
+        StaffRole staffRole = staffRoleMapper.selectOne(wrapper);
+        staffRole.setRoleId(roleId);
+        int flag = staffRoleMapper.updateById(staffRole);
+        return flag;
     }
 
     /**
      * 添加员工
+     * @param addStaffParam
+     * @return
      */
-    public Result addStaffInfo(Staff staff){
+    public int addStaffInfo(AddStaffParam addStaffParam){
+        Staff staff = BeanCopyUtils.copyBean(addStaffParam,Staff.class);
         int count = staffMapper.insert(staff);
-        return Result.success(count);
+        System.out.println(staff.getId());
+        System.out.println(addStaffParam.getRoleId());
+        int flag = addStaffRole(staff.getId(), addStaffParam.getRoleId());
+        return count * flag;
+    }
+
+    /**
+     * 新增staffRoleId 数据
+     * @param staffId
+     * @param roleId
+     * @return
+     */
+    public int addStaffRole(Long staffId,Long roleId){
+        StaffRole staffRole = new StaffRole();
+        staffRole.setRoleId(roleId);
+        staffRole.setStaffId(staffId);
+        int flag = staffRoleMapper.insert(staffRole);
+        return flag;
     }
 
     /**
@@ -67,4 +162,5 @@ public class staffService {
         Staff staff = staffMapper.selectById(id);
         return staff;
     }
+
 }

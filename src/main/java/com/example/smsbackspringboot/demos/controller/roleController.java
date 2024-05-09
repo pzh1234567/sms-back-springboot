@@ -24,8 +24,8 @@ public class roleController {
 
     @ApiOperation(value ="获取角色列表")
     @GetMapping("/user/role/getRoleList")
-    public Result getRoleList(String roleName, Integer pageNum, Integer pageSize){
-        Result result = roleService.getRoleList(roleName,pageNum,pageSize);
+    public Result getRoleList(String roleName){
+        Result result = roleService.getRoleList(roleName);
         return result;
     }
 

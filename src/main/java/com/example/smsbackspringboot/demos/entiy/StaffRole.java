@@ -1,5 +1,7 @@
 package com.example.smsbackspringboot.demos.entiy;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
@@ -14,6 +16,7 @@ import javax.persistence.Entity;
 @AllArgsConstructor
 @TableName("t_staff_role")
 public class StaffRole {
+    @TableId(type = IdType.AUTO)
     private Integer id;
     //一个用户对应一个岗位；
     private Long staffId;

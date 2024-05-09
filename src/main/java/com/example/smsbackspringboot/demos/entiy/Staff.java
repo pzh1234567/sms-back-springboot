@@ -15,10 +15,11 @@ import javax.persistence.Entity;
 public class Staff {
     @TableId(type = IdType.AUTO)
     private Long id;
+
     private String name;
     private String account;
     private String password;
-    private Integer gender;
+    private int gender;
     private String birth;
     private String phone;
     private String idnumber;
@@ -28,10 +29,10 @@ public class Staff {
     @TableField(value = "entryTime")
     private String entryTime;
     private String img;
-    private Integer depart;
+    private int status; //员工在职状态
     @TableField(value = "departTime")
     private String departTime;
-    private Integer isfreeze;
+    private int isfreeze;
     @TableField(value = "createTime")
     private String createTime;
     @TableField(value = "updateTime")

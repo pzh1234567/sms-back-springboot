@@ -34,8 +34,23 @@ public class supplierService {
     }
 
     /**
-     * 功能：新增员工
-     **/
+     * 添加供应商
+     * @param supplier
+     * @return
+     */
+    public int addSupplier(Supplier supplier){
+        int count = supplierMapper.insert(supplier);
+        return count;
+    }
 
+    /**
+     * 编辑供应商
+     * @param supplier
+     * @return
+     */
+    public int editSupplier(Supplier supplier){
+        int count = supplierMapper.updateById(supplier);
+        return count;
+    }
 
 }

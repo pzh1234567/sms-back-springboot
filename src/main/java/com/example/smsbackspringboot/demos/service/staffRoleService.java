@@ -3,6 +3,7 @@ package com.example.smsbackspringboot.demos.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.smsbackspringboot.demos.common.Result;
 import com.example.smsbackspringboot.demos.entiy.Order;
+import com.example.smsbackspringboot.demos.entiy.Role;
 import com.example.smsbackspringboot.demos.entiy.Staff;
 import com.example.smsbackspringboot.demos.entiy.StaffRole;
 import com.example.smsbackspringboot.demos.mapper.staffMapper;
@@ -24,6 +25,11 @@ public class staffRoleService {
     @Autowired
     staffMapper staffMapper;
 
+    /**
+     * 根据角色id获取用户数据
+     * @param roleId
+     * @return
+     */
     public Result getStaffListbyRoleId(Long roleId){
         LambdaQueryWrapper<StaffRole> wrapper=new LambdaQueryWrapper<>();
         wrapper.eq(roleId!=null,StaffRole::getRoleId,roleId);
@@ -47,4 +53,20 @@ public class staffRoleService {
         }
         return staffList;
     }
+
+    /**
+     * 新增staffRoleId 数据
+     * @param staffId
+     * @param roleId
+     * @return
+     */
+    public int addStaffRole(Long staffId,Long roleId){
+        StaffRole staffRole = new StaffRole();
+        staffRole.setRoleId(roleId);
+        staffRole.setStaffId(staffId);
+        int count = staffRoleMapper.insert(staffRole);
+        return count;
+    }
+
+
 }
