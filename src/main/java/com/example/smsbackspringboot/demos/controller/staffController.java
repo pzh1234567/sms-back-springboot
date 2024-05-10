@@ -69,7 +69,9 @@ public class staffController {
         int count = staffService.addStaffInfo(addStaffParam);
         if (count > 0) {
             return Result.success("添加成功");
-        } else {
+        }else if(count == -1) {
+            return Result.error("该账号已经被注册");
+        }else {
             return Result.error("添加失败");
         }
 //        Role role = roleService.getRoleByName(addStaffParam.getRoleName());
@@ -109,5 +111,18 @@ public class staffController {
     public Result getStaffByAccount(String account){
         Staff staff = staffService.getStaffInfoByAccount(account);
         return Result.success(staff);
+    }
+
+    @ApiOperation(value = "注册")
+    @PostMapping("/user/staff/staffRegister")
+    public Result resultRegister(@RequestBody AddStaffParam addStaffParam){
+        int count = staffService.addStaffInfo(addStaffParam);
+        if (count > 0) {
+            return Result.success("注册成功");
+        }else if(count == -1) {
+            return Result.error("该账号已经被注册");
+        }else {
+            return Result.error("注册失败");
+        }
     }
 }

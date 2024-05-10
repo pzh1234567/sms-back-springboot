@@ -40,17 +40,20 @@ public class staffService {
      */
 
     public Result getStaffList(Long roleId, String name, Integer gender, Integer pageNum, Integer pageSize){
-        LambdaQueryWrapper<StaffRole> staffRoleWrapper=new LambdaQueryWrapper<>();
-        staffRoleWrapper.eq(roleId!=null,StaffRole::getRoleId, roleId);
-        List<StaffRole> staffRoleList = staffRoleMapper.selectList(staffRoleWrapper);
         List<Long> staffIdList = new ArrayList<>();
-        for (StaffRole staffRole: staffRoleList){
-            staffIdList.add(staffRole.getStaffId());
-        }
         LambdaQueryWrapper<Staff> staffWrapper=new LambdaQueryWrapper<>();
+        if(roleId !=null){
+            LambdaQueryWrapper<StaffRole> staffRoleWrapper=new LambdaQueryWrapper<>();
+            staffRoleWrapper.eq(roleId!=null,StaffRole::getRoleId, roleId);
+            List<StaffRole> staffRoleList = staffRoleMapper.selectList(staffRoleWrapper);
+            //根据roleID获取该角色下的员工Id
+            for (StaffRole staffRole: staffRoleList){
+                staffIdList.add(staffRole.getStaffId());
+            }
+            staffWrapper.in(staffIdList.size()!=0,Staff::getId,staffIdList);
+        }
         staffWrapper.like(name!=null,Staff::getName,name);
         staffWrapper.eq(gender!=null,Staff::getGender,gender);
-        staffWrapper.in(staffIdList.size()!=0,Staff::getId,staffIdList);
         Page<Staff> page = new Page<Staff>(pageNum,pageSize);
 //        System.out.println("2222222"+goodType);
         IPage<Staff> staffIPage = staffMapper.selectPage(page, staffWrapper);
@@ -74,9 +77,11 @@ public class staffService {
             LambdaQueryWrapper<StaffRole> wrapper=new LambdaQueryWrapper<>();
             wrapper.eq(staffId!=null, StaffRole::getStaffId,staffId);
             StaffRole staffRole = staffRoleMapper.selectOne(wrapper);
-            Long roleId = staffRole.getRoleId();
             AddStaffParam addStaffParam = BeanCopyUtils.copyBean(staff,AddStaffParam.class);
-            addStaffParam.setRoleId(roleId);
+            if(staffRole!=null){
+                Long roleId = staffRole.getRoleId();
+                addStaffParam.setRoleId(roleId);
+            }
             addStaffParamsList.add(addStaffParam);
         }
         return addStaffParamsList;
@@ -131,12 +136,21 @@ public class staffService {
      * @return
      */
     public int addStaffInfo(AddStaffParam addStaffParam){
+        LambdaQueryWrapper<Staff> staffWrapper=new LambdaQueryWrapper<>();
+        staffWrapper.eq(addStaffParam.getAccount()!=null,Staff::getAccount,addStaffParam.getAccount());
+        Staff checked = staffMapper.selectOne(staffWrapper);
+        if(checked !=null){
+            return -1;
+        }
         Staff staff = BeanCopyUtils.copyBean(addStaffParam,Staff.class);
         int count = staffMapper.insert(staff);
         System.out.println(staff.getId());
         System.out.println(addStaffParam.getRoleId());
-        int flag = addStaffRole(staff.getId(), addStaffParam.getRoleId());
-        return count * flag;
+        int flag = 1;
+        if(addStaffParam.getRoleId()!= null){
+            flag = addStaffRole(staff.getId(), addStaffParam.getRoleId());
+        }
+        return flag*count;
     }
 
     /**
