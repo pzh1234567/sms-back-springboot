@@ -163,4 +163,17 @@ public class staffService {
         return staff;
     }
 
+    /**
+     * 根据账号查询用户信息
+     * @param account
+     * @return
+     */
+    public Staff getStaffInfoByAccount(String account){
+        LambdaQueryWrapper<Staff> wrapper=new LambdaQueryWrapper<>();
+        wrapper.eq(account!=null,Staff::getAccount, account);
+        Staff staff = staffMapper.selectOne(wrapper);
+        return staff;
+    }
+
+
 }

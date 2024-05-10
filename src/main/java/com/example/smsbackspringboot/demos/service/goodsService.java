@@ -88,8 +88,10 @@ public class goodsService {
      */
     public int reduceGoodsInventory(Long id, int num){
         Goods goods = goodsMapper.selectById(id);
-        int inventory = goods.getGoodInventory() - num;
+        int sold = goods.getSold() + num;
+        int inventory = goods.getGoodTotal() - sold;
         goods.setGoodInventory(inventory);
+        goods.setSold(sold);
         int count = goodsMapper.updateById(goods);
         return count;
     }

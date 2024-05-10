@@ -1,5 +1,6 @@
 package com.example.smsbackspringboot.demos.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.example.smsbackspringboot.demos.common.Result;
 import com.example.smsbackspringboot.demos.entiy.Role;
 import com.example.smsbackspringboot.demos.entiy.Staff;
@@ -7,6 +8,7 @@ import com.example.smsbackspringboot.demos.service.roleService;
 import com.example.smsbackspringboot.demos.service.staffRoleService;
 import com.example.smsbackspringboot.demos.util.BeanCopyUtils;
 import com.example.smsbackspringboot.demos.vo.param.AddStaffParam;
+import com.example.smsbackspringboot.demos.vo.param.LoginParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -72,5 +74,40 @@ public class staffController {
         }
 //        Role role = roleService.getRoleByName(addStaffParam.getRoleName());
 //        int count = staffRoleService.addStaffRole(staffId, addStaffParam.getRoleId());
+    }
+
+    @ApiOperation(value = "登录")
+    @PostMapping("/login")
+    public Result Login(@RequestBody LoginParam loginParam){
+        Staff staff = staffService.getStaffInfoByAccount(loginParam.getAccount());
+//        System.out.println(staff.getPassword());
+        if(loginParam.getPassword().equals( staff.getPassword())){
+            StpUtil.login(staff.getAccount());
+            return Result.success(StpUtil.getTokenValue());
+        }else {
+            return Result.error("密码输入错误");
+        }
+    }
+
+
+    @GetMapping("/islogin")
+    public String test(){
+        return "当前会话是否登录：" + StpUtil.isLogin();
+    }
+
+    // 用户登出接口
+    @ApiOperation(value = "登出")
+    @GetMapping("/logout")
+    public String logout() {
+        // 登出操作
+        StpUtil.logout();
+        return "登出成功";
+    }
+
+    @ApiOperation(value = "根据用户账号获取用户信息")
+    @GetMapping("/user/staff/getStaffbyAccount")
+    public Result getStaffByAccount(String account){
+        Staff staff = staffService.getStaffInfoByAccount(account);
+        return Result.success(staff);
     }
 }

@@ -60,7 +60,7 @@ public class orderController {
         if(result == 0){
             Result.error("添加订单失败");
         }
-        return Result.success(result);
+        return Result.success("添加订单成功");
     }
 
 
