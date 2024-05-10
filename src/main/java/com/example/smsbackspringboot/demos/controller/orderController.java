@@ -2,6 +2,7 @@ package com.example.smsbackspringboot.demos.controller;
 
 import com.example.smsbackspringboot.demos.common.Result;
 import com.example.smsbackspringboot.demos.entiy.Order;
+import com.example.smsbackspringboot.demos.service.goodsService;
 import com.example.smsbackspringboot.demos.service.orderGoodsService;
 import com.example.smsbackspringboot.demos.service.orderService;
 import com.example.smsbackspringboot.demos.vo.param.AddOrderParam;
@@ -21,6 +22,9 @@ public class orderController {
 
     @Autowired
     orderGoodsService orderGoodsService;
+
+    @Autowired
+    goodsService goodsService;
 
 
     @ApiOperation(value = "获取订单列表")
@@ -47,13 +51,17 @@ public class orderController {
         for (GoodItemParam item : orderInfo.getGoodsList()) {
             Long goodsId = item.getGoodId();
             int num = item.getNum();
+            //添加订单商品表信息
             int count = orderGoodsService.addOrderGoods(orderId,goodsId,num);
-            result = count * result;
+            //减少对应商品库存
+            int flag = goodsService.reduceGoodsInventory(goodsId, num);
+            result = count * result *flag;
         }
         if(result == 0){
             Result.error("添加订单失败");
         }
         return Result.success(result);
     }
+
 
 }

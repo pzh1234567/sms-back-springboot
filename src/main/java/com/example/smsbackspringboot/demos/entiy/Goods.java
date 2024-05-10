@@ -21,8 +21,8 @@ public class Goods {
     private String goodDetail;
     private Double goodCost;
     private Double goodPrice;
-    private Integer goodTotal;
-    private String goodInventory;
+    private int goodTotal;//总量
+    private int goodInventory; //库存
     private int goodStatus;
     private String goodImg;
     private String stackingTime;

@@ -80,4 +80,18 @@ public class goodsService {
         return Result.success(count);
     }
 
+    /**
+     * 编辑商品销量
+     * @param id
+     * @param num
+     * @return
+     */
+    public int reduceGoodsInventory(Long id, int num){
+        Goods goods = goodsMapper.selectById(id);
+        int inventory = goods.getGoodInventory() - num;
+        goods.setGoodInventory(inventory);
+        int count = goodsMapper.updateById(goods);
+        return count;
+    }
+
 }

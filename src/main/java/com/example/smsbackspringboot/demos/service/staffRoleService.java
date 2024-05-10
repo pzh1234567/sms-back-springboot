@@ -2,10 +2,7 @@ package com.example.smsbackspringboot.demos.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.smsbackspringboot.demos.common.Result;
-import com.example.smsbackspringboot.demos.entiy.Order;
-import com.example.smsbackspringboot.demos.entiy.Role;
-import com.example.smsbackspringboot.demos.entiy.Staff;
-import com.example.smsbackspringboot.demos.entiy.StaffRole;
+import com.example.smsbackspringboot.demos.entiy.*;
 import com.example.smsbackspringboot.demos.mapper.staffMapper;
 import com.example.smsbackspringboot.demos.mapper.staffRoleMapper;
 import com.example.smsbackspringboot.demos.vo.commom.OrderInfoVo;
@@ -30,12 +27,12 @@ public class staffRoleService {
      * @param roleId
      * @return
      */
-    public Result getStaffListbyRoleId(Long roleId){
+    public List<Staff> getStaffListbyRoleId(Long roleId){
         LambdaQueryWrapper<StaffRole> wrapper=new LambdaQueryWrapper<>();
         wrapper.eq(roleId!=null,StaffRole::getRoleId,roleId);
         List<StaffRole> staffRoleList = staffRoleMapper.selectList(wrapper);
         List<Staff> staffList = getStaffListbyId(staffRoleList);
-        return Result.success(staffList);
+        return staffList;
     }
 
     /**
@@ -68,5 +65,18 @@ public class staffRoleService {
         return count;
     }
 
+    /**
+     * 删除角色下角色
+     * @param roleId
+     * @param staffId
+     * @return
+     */
+    public int deleteRoleStaff(Long roleId,Long staffId){
+        LambdaQueryWrapper<StaffRole> wrapper=new LambdaQueryWrapper<>();
+        wrapper.eq(roleId!=null,StaffRole::getRoleId,roleId);
+        wrapper.eq(staffId!=null,StaffRole::getStaffId,staffId);
+        int flag = staffRoleMapper.delete(wrapper);
+        return flag;
+    }
 
 }

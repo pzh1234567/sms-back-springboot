@@ -3,6 +3,7 @@ package com.example.smsbackspringboot.demos.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.smsbackspringboot.demos.common.Result;
 import com.example.smsbackspringboot.demos.entiy.Power;
+import com.example.smsbackspringboot.demos.entiy.Role;
 import com.example.smsbackspringboot.demos.entiy.RolePower;
 import com.example.smsbackspringboot.demos.mapper.powerMapper;
 import com.example.smsbackspringboot.demos.mapper.rolePowerMapper;
@@ -37,5 +38,27 @@ public class rolePowerService {
             powerList.add(power);
         }
         return powerList;
+    }
+
+    /**
+     * 删除角色下的权限
+     * @param roleId
+     * @param powerId
+     * @return
+     */
+    public int deleteRolePower(Long roleId,Long powerId){
+        LambdaQueryWrapper<RolePower> wrapper=new LambdaQueryWrapper<>();
+        wrapper.eq(roleId!=null,RolePower::getRoleId,roleId);
+        wrapper.eq(powerId!=null,RolePower::getPowerId,powerId);
+        int flag = rolePowerMapper.delete(wrapper);
+        return flag;
+    }
+
+    public int addRolePower(Long roleId, int powerId){
+        RolePower rolePower = new RolePower();
+        rolePower.setPowerId(powerId);
+        rolePower.setRoleId(roleId);
+        int count = rolePowerMapper.insert(rolePower);
+        return count;
     }
 }
