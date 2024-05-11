@@ -17,6 +17,13 @@ public class Supplier {
     private Long id;
     private String name;
     private String detail;
+    private String contacts;
+    private String contactsPhone;
+    private  String email;
+    private  String address;
+    private int status;
+    @TableField(value = "settlementMethod")
+    private String settlementMethod;
     @TableField(value = "createTime")
     private String createTime;
     @TableField(value = "updateTime")

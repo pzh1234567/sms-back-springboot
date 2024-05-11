@@ -17,6 +17,9 @@ public class Bulletin {
     @TableId(type = IdType.AUTO)
     private Long id;
     private String title;
+    //发布人Id
+    private Long staffId;
+    //发布人姓名
     private String staffName;
     private String content;
     private Integer status;

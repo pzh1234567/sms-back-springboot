@@ -134,4 +134,52 @@ public class orderService {
         int count = orderMapper.insert(order);
         return order.getOrderId();
     }
+
+    /**
+     * 获取每年销量
+     * @param year
+     * @return
+     */
+    public List<Integer> getGoodSoldByYear(String year){
+        List<Integer> salesVolume = new ArrayList<>();
+        //根据年份
+        String [] months = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
+        for (String month : months) {
+            int sold = 0;
+            // 在循环体内执行操作，比如打印月份
+            System.out.println("月份：" + month);
+            String ym =year+ "-"+month+"-";
+            LambdaQueryWrapper<Order> wrapper=new LambdaQueryWrapper<>();
+            wrapper.like(year!=null,Order::getCreatetime, ym);
+            List<Order> orderList = orderMapper.selectList(wrapper);
+            System.out.println(orderList);
+            if(orderList!= null){
+                sold = getSoldByOrderGoods(orderList);
+            }
+            System.out.println("销量" + sold);
+            salesVolume.add(sold);
+        }
+//        wrapper.like(year!=null,Order::getCreatetime, year+ "-%");
+        return salesVolume;
+    }
+
+    /**
+     * 获取订单里的商品数量
+     * @param orderList
+     * @return
+     */
+    public int getSoldByOrderGoods(List<Order> orderList){
+        int sold = 0;
+        for (Order order:orderList){
+            Long id = order.getOrderId();
+            LambdaQueryWrapper<OrderGoods> wrapper=new LambdaQueryWrapper<>();
+            wrapper.eq(id!=null,OrderGoods::getOrderId,id);
+            List<OrderGoods> orderGoodsList = orderGoodsMapper.selectList(wrapper);
+            for (OrderGoods orderGoods:orderGoodsList){
+                int count = orderGoods.getGoodCount();
+                sold+=count;
+            }
+        }
+        return sold;
+    }
 }

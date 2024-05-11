@@ -11,6 +11,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @description TODO订单controller
  */
@@ -63,5 +65,10 @@ public class orderController {
         return Result.success("添加订单成功");
     }
 
-
+    @ApiOperation(value = "查询每月商品销量")
+    @GetMapping("/sales/detail/getGoodsSoldByYear")
+    public Result getGoodSoldByYear(String year){
+        List<Integer> salesVolume = orderService.getGoodSoldByYear(year);
+        return Result.success(salesVolume);
+    }
 }

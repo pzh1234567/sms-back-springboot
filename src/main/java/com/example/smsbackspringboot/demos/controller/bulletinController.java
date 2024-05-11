@@ -20,7 +20,7 @@ public class bulletinController {
 
     @ApiOperation(value = "获取公告列表")
     @GetMapping("/bulletin/getuBulletinList")
-    public Result getBulletinList(String date, Integer title, String name,Integer pageNum, Integer pageSize){
+    public Result getBulletinList(String date, String title, String name,Integer pageNum, Integer pageSize){
         Result result = bulltinService.getBulletinList(date, title,name,pageNum,pageSize);
         return result;
 

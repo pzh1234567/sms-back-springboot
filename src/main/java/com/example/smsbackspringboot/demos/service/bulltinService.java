@@ -19,7 +19,7 @@ public class bulltinService {
     @Autowired
     bulletinMapper bulletinMapper;
 
-    public Result getBulletinList(String date, Integer title, String name,Integer pageNum, Integer pageSize) {
+    public Result getBulletinList(String date, String title, String name,Integer pageNum, Integer pageSize) {
         LambdaQueryWrapper<Bulletin> wrapper=new LambdaQueryWrapper<>();
         wrapper.like(date!=null,Bulletin::getCreateTime,date);
         wrapper.like(title!=null,Bulletin::getTitle,title);

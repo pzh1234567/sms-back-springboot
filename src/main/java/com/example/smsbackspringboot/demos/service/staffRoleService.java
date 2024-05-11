@@ -66,7 +66,7 @@ public class staffRoleService {
     }
 
     /**
-     * 删除角色下角色
+     * 删除角色下用户
      * @param roleId
      * @param staffId
      * @return

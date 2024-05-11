@@ -122,11 +122,18 @@ public class staffService {
      * @return
      */
     public int updateStaffRoleByStaffId(Long staffId, Long roleId){
+        System.out.println(staffId);
         LambdaQueryWrapper<StaffRole> wrapper=new LambdaQueryWrapper<>();
         wrapper.eq(staffId!=null,StaffRole::getStaffId,staffId);
         StaffRole staffRole = staffRoleMapper.selectOne(wrapper);
-        staffRole.setRoleId(roleId);
-        int flag = staffRoleMapper.updateById(staffRole);
+        int flag = 1;
+        if (staffRole != null && roleId != null) {
+            staffRole.setRoleId(roleId);
+            flag = staffRoleMapper.updateById(staffRole);
+        }
+        if(staffRole == null && roleId != null){
+            flag = addStaffRole(staffId,roleId);
+        }
         return flag;
     }
 
