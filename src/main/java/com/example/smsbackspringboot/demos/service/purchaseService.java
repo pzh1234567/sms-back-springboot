@@ -83,13 +83,11 @@ public class purchaseService {
                 // 对goodId进行处理
                 System.out.println("GoodId: " + goodId);
                 Goods goods = getGoodById(goodId);
-                GoodsItemVo goodsItem =new GoodsItemVo();
+                GoodsItemVo goodsItem = BeanCopyUtils.copyBean(goods,GoodsItemVo.class);
                 goodsItem.setCount(purchaseGoods.getGoodCount());
+                goodsItem.setCount(count);
                 goodsItem.setGoodId(goodId);
                 goodsItem.setGoodCost(purchaseGoods.getGoodCost());
-                goodsItem.setGoodName(goods.getGoodName());
-                goodsItem.setGoodPrice(goods.getGoodPrice());
-                goodsItem.setGoodType(goods.getGoodType());
                 goodsList.add(goodsItem);
             }
         }else {
@@ -108,8 +106,66 @@ public class purchaseService {
         return goods;
     }
 
+    /**
+     * 根据id获取供应商信息
+     * @param id
+     * @return
+     */
     public Supplier getSupplier(Long id){
         Supplier supplier = supplierMapper.selectById(id);
         return supplier;
     }
+
+    /**
+     * 根据name获取供应商信息
+     * @param name
+     * @return
+     */
+    public Supplier getSupplierName(String name){
+        LambdaQueryWrapper<Supplier> wrapper = new LambdaQueryWrapper();
+        wrapper.eq(name!=null,Supplier::getName,name);
+        Supplier supplier = supplierMapper.selectOne(wrapper);
+        return supplier;
+    }
+
+    /**
+     * 进货
+     * @param purchaseInfoVo
+     * @return
+     */
+    public int addPurchase(PurchaseInfoVo purchaseInfoVo){
+        Purchase purchase = BeanCopyUtils.copyBean(purchaseInfoVo,Purchase.class);
+        Supplier supplier = getSupplierName(purchaseInfoVo.getSupplierName());
+        purchase.setSupplierId(supplier.getId());
+        int count = purchaseMapper.insert(purchase);
+        Long purchaseId = purchase.getId();
+        int flag;
+        for (GoodsItemVo goodsItemVo:purchaseInfoVo.getGoodsList()){
+            Goods goods = BeanCopyUtils.copyBean(goodsItemVo,Goods.class);
+            goods.setGoodInventory(goodsItemVo.getCount());
+            goods.setGoodTotal(goodsItemVo.getCount());
+            goods.setGoodType(goodsItemVo.getGoodType());
+            goods.setStackingCount(0);
+            goods.setSold(0);
+            goods.setGoodStatus(0);
+            flag = goodsMapper.insert(goods);
+            Long id = goods.getGoodId();
+//            System.out.println(goodsItemVo.getCount());
+            PurchaseGoods purchaseGoods = new PurchaseGoods();
+//            System.out.println(id);
+            purchaseGoods.setGoodId(id);
+            purchaseGoods.setPurchaseId(purchaseId);
+            purchaseGoods.setGoodCount(goodsItemVo.getCount());
+            purchaseGoods.setGoodCost(goodsItemVo.getGoodCost());
+            int tmp = purchaseGoodsMapper.insert(purchaseGoods);
+            count = count*flag*tmp;
+        }
+        return count;
+    }
+
+    public int editPurchase(Purchase purchase){
+        int count = purchaseMapper.updateById(purchase);
+        return count;
+    }
+
 }

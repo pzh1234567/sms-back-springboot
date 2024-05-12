@@ -8,17 +8,21 @@ import com.example.smsbackspringboot.demos.common.Result;
 import com.example.smsbackspringboot.demos.entiy.Goods;
 import com.example.smsbackspringboot.demos.entiy.Order;
 import com.example.smsbackspringboot.demos.entiy.OrderGoods;
+import com.example.smsbackspringboot.demos.entiy.Purchase;
 import com.example.smsbackspringboot.demos.mapper.goodsMapper;
 import com.example.smsbackspringboot.demos.mapper.orderGoodsMapper;
 import com.example.smsbackspringboot.demos.mapper.orderMapper;
+import com.example.smsbackspringboot.demos.util.BeanCopyUtils;
 import com.example.smsbackspringboot.demos.vo.commom.GoodsItemVo;
 import com.example.smsbackspringboot.demos.vo.commom.OrderInfoVo;
 import com.example.smsbackspringboot.demos.vo.commom.PageVo;
+import com.example.smsbackspringboot.demos.vo.commom.SaleDetailVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 @Service
 public class orderService {
@@ -43,6 +47,7 @@ public class orderService {
 
     public Result getOrderList(Long orderId,String name, Integer pageNum, Integer pageSize,Integer status) {
         LambdaQueryWrapper<Order> wrapper=new LambdaQueryWrapper<>();
+        wrapper.orderByDesc(Order::getCreatetime);
         //根据会员名字查询
         wrapper.like(name!=null,Order::getCustomerName,name);
         //根据订单id查询
@@ -100,13 +105,8 @@ public class orderService {
                 // 对goodId进行处理
                 System.out.println("GoodId: " + goodId);
                 Goods goods = getGoodById(goodId);
-                GoodsItemVo goodsItem =new GoodsItemVo();
+                GoodsItemVo goodsItem = BeanCopyUtils.copyBean(goods,GoodsItemVo.class);
                 goodsItem.setCount(count);
-                goodsItem.setGoodId(goodId);
-                goodsItem.setGoodCost(goods.getGoodCost());
-                goodsItem.setGoodName(goods.getGoodName());
-                goodsItem.setGoodPrice(goods.getGoodPrice());
-                goodsItem.setGoodType(goods.getGoodType());
                 goodsList.add(goodsItem);
             }
         }else {
@@ -140,8 +140,9 @@ public class orderService {
      * @param year
      * @return
      */
-    public List<Integer> getGoodSoldByYear(String year){
-        List<Integer> salesVolume = new ArrayList<>();
+    public List<SaleDetailVo>getGoodSoldByYear(String year){
+//        List<Integer> salesVolume = new ArrayList<>();
+        List<SaleDetailVo> saleDetailVoList = new ArrayList<>();
         //根据年份
         String [] months = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
         for (String month : months) {
@@ -153,14 +154,17 @@ public class orderService {
             wrapper.like(year!=null,Order::getCreatetime, ym);
             List<Order> orderList = orderMapper.selectList(wrapper);
             System.out.println(orderList);
-            if(orderList!= null){
-                sold = getSoldByOrderGoods(orderList);
+            SaleDetailVo saleDetailVo = new SaleDetailVo();
+            if(orderList!= null) {
+                saleDetailVo = getSoldByOrderGoods(orderList);
+//                saleDetailVoList.add(saleDetailVo);
             }
-            System.out.println("销量" + sold);
-            salesVolume.add(sold);
+            saleDetailVoList.add(saleDetailVo);
+//            System.out.println("销量" + sold);
+//            salesVolume.add(sold);
         }
 //        wrapper.like(year!=null,Order::getCreatetime, year+ "-%");
-        return salesVolume;
+        return saleDetailVoList;
     }
 
     /**
@@ -168,8 +172,10 @@ public class orderService {
      * @param orderList
      * @return
      */
-    public int getSoldByOrderGoods(List<Order> orderList){
+    public SaleDetailVo getSoldByOrderGoods(List<Order> orderList){
+        SaleDetailVo saleDetailVo = new SaleDetailVo();
         int sold = 0;
+        Double aProfit = 0.0;
         for (Order order:orderList){
             Long id = order.getOrderId();
             LambdaQueryWrapper<OrderGoods> wrapper=new LambdaQueryWrapper<>();
@@ -178,8 +184,18 @@ public class orderService {
             for (OrderGoods orderGoods:orderGoodsList){
                 int count = orderGoods.getGoodCount();
                 sold+=count;
+                Double profit = getprofitbyGoodId(orderGoods.getGoodId());
+                aProfit += profit *count;
             }
         }
-        return sold;
+        saleDetailVo.setProfit(aProfit);
+        saleDetailVo.setSold(sold);
+        return saleDetailVo;
+    }
+
+    public Double getprofitbyGoodId(Long goodsId){
+        Goods goods = goodsMapper.selectById(goodsId);
+        Double profit = goods.getGoodPrice() - goods.getGoodCost();
+        return profit;
     }
 }

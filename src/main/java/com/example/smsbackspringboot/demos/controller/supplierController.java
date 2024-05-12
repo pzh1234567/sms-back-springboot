@@ -40,4 +40,12 @@ public class supplierController {
             return Result.error("编辑失败");
         }
     }
+
+    @ApiOperation(value = "根据名称查询供应商列表")
+    @GetMapping("/supplier/getSupplierListByName")
+    public Result getSupplierListByName(String name){
+
+        Result result = supplierService.getSupplierListByName(name);
+        return  result;
+    }
 }

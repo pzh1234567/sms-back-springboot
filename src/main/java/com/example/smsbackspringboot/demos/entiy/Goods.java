@@ -26,36 +26,14 @@ public class Goods {
     private int goodStatus;
     private String goodImg;
     private String stackingTime;
-    private String stackingCount;
-    private String purchasingparty;
-    private Integer sold;
+    private int stackingCount;
+//    private String purchasingparty;
+    private int sold;
     private String goodCreatetime;
     private String goodUpdatetime;
 
     @TableLogic(value = "0", delval = "1")
     private int goodDeleted;
 
-    @Override
-    public String toString() {
-        return "Goods{" +
-                "goodId=" + goodId +
-                ", goodName='" + goodName + '\'' +
-                ", goodType=" + goodType +
-                ", goodDetail='" + goodDetail + '\'' +
-                ", goodCost=" + goodCost +
-                ", goodPrice=" + goodPrice +
-                ", goodTotal='" + goodTotal + '\'' +
-                ", goodInventory='" + goodInventory + '\'' +
-                ", goodStatus=" + goodStatus +
-                ", goodImg='" + goodImg + '\'' +
-                ", stackingTime='" + stackingTime + '\'' +
-                ", stackingCount='" + stackingCount + '\'' +
-                ", purchasingParty='" + purchasingparty + '\'' +
-                ", sold='" + sold + '\'' +
-                ", goodCreatetime='" + goodCreatetime + '\'' +
-                ", goodUpdatetime='" + goodUpdatetime + '\'' +
-                ", goodDeleted=" + goodDeleted +
-                '}';
-    }
 
 }

@@ -32,9 +32,9 @@ public class GoodsController {
      */
     @ApiOperation(value = "获取商品列表")
     @GetMapping("/good/getAllGoodList")
-    public Result getGoods(String goodName,Integer goodType,Integer pageNum,Integer pageSize,Integer goodStatus){
+    public Result getGoods(String goodName,Integer goodType,Integer pageNum,Integer pageSize,Integer status){
         System.out.println("111111111111goodList:1111111111111111111111111111111111111111111");
-        Result result = goodsService.getGoodsList(goodName,goodType,pageNum,pageSize,goodStatus);
+        Result result = goodsService.getGoodsList(goodName,goodType,pageNum,pageSize,status);
         return result;
 
     }

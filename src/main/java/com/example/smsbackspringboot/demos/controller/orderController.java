@@ -5,6 +5,7 @@ import com.example.smsbackspringboot.demos.entiy.Order;
 import com.example.smsbackspringboot.demos.service.goodsService;
 import com.example.smsbackspringboot.demos.service.orderGoodsService;
 import com.example.smsbackspringboot.demos.service.orderService;
+import com.example.smsbackspringboot.demos.vo.commom.SaleDetailVo;
 import com.example.smsbackspringboot.demos.vo.param.AddOrderParam;
 import com.example.smsbackspringboot.demos.vo.param.GoodItemParam;
 import io.swagger.annotations.ApiOperation;
@@ -68,7 +69,7 @@ public class orderController {
     @ApiOperation(value = "查询每月商品销量")
     @GetMapping("/sales/detail/getGoodsSoldByYear")
     public Result getGoodSoldByYear(String year){
-        List<Integer> salesVolume = orderService.getGoodSoldByYear(year);
-        return Result.success(salesVolume);
+        List<SaleDetailVo> saleDetailVoList = orderService.getGoodSoldByYear(year);
+        return Result.success(saleDetailVoList);
     }
 }

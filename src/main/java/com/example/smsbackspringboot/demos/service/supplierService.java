@@ -19,7 +19,7 @@ public class supplierService {
     @Resource
     supplierMapper supplierMapper;
     /**
-     * 功能：查看供应商列表
+     * 功能：分页查看供应商列表
      **/
     public Result getSupplierList(String name, Integer pageNum, Integer pageSize) {
         LambdaQueryWrapper<Supplier> wrapper=new LambdaQueryWrapper<>();
@@ -31,6 +31,19 @@ public class supplierService {
         List<Supplier> result = supplierIPage.getRecords();
         System.out.println(result);
         return Result.success(new PageVo(supplierIPage.getRecords(),supplierIPage.getTotal()));
+    }
+
+    /**
+     * 根据名称查询供应商
+     * @param name
+     * @return
+     */
+    public Result getSupplierListByName(String name) {
+        LambdaQueryWrapper<Supplier> wrapper=new LambdaQueryWrapper<>();
+//                System.out.println(name);
+        wrapper.eq(name!=null,Supplier::getName,name);
+        List<Supplier> supplierList = supplierMapper.selectList(wrapper);
+        return Result.success(supplierList);
     }
 
     /**
