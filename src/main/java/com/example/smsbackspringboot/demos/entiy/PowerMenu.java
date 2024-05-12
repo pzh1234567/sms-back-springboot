@@ -15,6 +15,6 @@ import javax.persistence.Entity;
 @TableName("t_power_menu")
 public class PowerMenu {
     private int id;
-    private int poweId;
+    private int powerId;
     private int menuId;
 }

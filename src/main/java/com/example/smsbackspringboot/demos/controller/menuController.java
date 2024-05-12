@@ -24,10 +24,16 @@ public class menuController {
      * 获取所有目录（测试）
      * @return
      */
+//    @GetMapping("/menu/getallmenu")
+//    public Result getAllMenu(){
+////        List<Menu> menuList = menuService.getAllMenu();
+//        MenuModifyVo menuList = menuService.getAllMenu();
+//        return Result.success(menuList);
+//    }
     @GetMapping("/menu/getallmenu")
-    public Result getAllMenu(){
+    public Result getAllMenu(Long staffId){
 //        List<Menu> menuList = menuService.getAllMenu();
-        MenuModifyVo menuList = menuService.getAllMenu();
+        MenuModifyVo menuList = menuService.getMenu(staffId);
         return Result.success(menuList);
     }
 }
