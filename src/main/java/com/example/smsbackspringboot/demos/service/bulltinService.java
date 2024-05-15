@@ -22,6 +22,7 @@ public class bulltinService {
 
     public Result getBulletinList(String date, String title, String name,Integer pageNum, Integer pageSize) {
         LambdaQueryWrapper<Bulletin> wrapper=new LambdaQueryWrapper<>();
+        wrapper.orderByDesc(Bulletin::getCreateTime);
         wrapper.like(date!=null,Bulletin::getCreateTime,date);
         wrapper.like(title!=null,Bulletin::getTitle,title);
         //查询发布人

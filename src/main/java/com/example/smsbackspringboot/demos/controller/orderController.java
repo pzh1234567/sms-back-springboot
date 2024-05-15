@@ -37,10 +37,10 @@ public class orderController {
 
     @ApiOperation(value = "获取订单列表")
     @GetMapping("/order/getOrderList")
-    public Result getOrderList(String customerName, Long orderId, Integer pageNum, Integer pageSize, Integer status) {
+    public Result getOrderList(String userName, Long orderId, Integer pageNum, Integer pageSize, Integer status) {
         System.out.println("111111111111orderList:1111111111111111111111111111111111111111111");
 //        List<Long> idList = customerService.getCustomerByName(customerName);
-        Result result = orderService.getOrderList(orderId, customerName, pageNum, pageSize, status);
+        Result result = orderService.getOrderList(orderId, userName, pageNum, pageSize, status);
         System.out.println("22222222222222222222222222222222222goodList:" + result);
         return result;
 

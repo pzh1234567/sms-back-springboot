@@ -45,16 +45,40 @@ public class menuService {
         LambdaQueryWrapper<StaffRole> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(staffId!=null, StaffRole::getStaffId, staffId);
         StaffRole staffRole = staffRoleMapper.selectOne(wrapper);
-        Long roleId = staffRole.getRoleId();
-         // 将变量声明移到外部
-        if (roleId == 1) {
-            menuModifyVo = getAllMenu();
-        } else {
-            menuModifyVo = getMenuByRoleId(roleId);
+        System.out.println(staffRole);
+        if(staffRole == null ){
+            menuModifyVo = getMenuByNoPower();
+        }else {
+            Long roleId = staffRole.getRoleId();
+            // 将变量声明移到外部
+            if (roleId == 1) {
+                menuModifyVo = getAllMenu();
+            } else {
+                menuModifyVo = getMenuByRoleId(roleId);
+            }
         }
         return menuModifyVo;
     }
 
+    public MenuModifyVo getMenuByNoPower(){
+        List<Integer> menuIds = new ArrayList<>();
+        menuIds.add(4);
+        menuIds.add(15);
+        LambdaQueryWrapper<Menu> menuWrapper=new LambdaQueryWrapper<>();
+        menuWrapper.in(Menu::getMenuId,menuIds);
+        List<Menu> menuList = menuMapper.selectList(menuWrapper);
+        List<MenuLabelVo> menus = BeanCopyUtils.copyBeanList(menuList, MenuLabelVo.class);
+        List<MenuLabelVo> menuLabelVoList = builderLabelMenuTree(menus,1);
+
+        MenuModifyVo menuModifyVo = new MenuModifyVo();
+        List<String> checkedKeys = new LinkedList<>(); // 假设你有一种方法来获取 checkedKeys
+        menuModifyVo.setCheckedKeys(checkedKeys);
+        menuModifyVo.setMenus(menuLabelVoList);
+
+        // 返回 MenuModifyVo 对象
+        System.out.println("2222222"+menuModifyVo);
+        return menuModifyVo;
+    }
 
     public MenuModifyVo getMenuByRoleId(Long roleId){
         LambdaQueryWrapper<RolePower> wrapper = new LambdaQueryWrapper<>();

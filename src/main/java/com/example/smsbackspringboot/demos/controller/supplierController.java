@@ -14,7 +14,7 @@ public class supplierController {
 
     @ApiOperation(value="获取供应商列表")
     @GetMapping("/supplier/getSuppliersList")
-    public Result getSupplierList(String name,int pageNum, int pageSize){
+    public Result getSupplierList(int pageNum, int pageSize,String name){
         Result result = supplierService.getSupplierList(name,pageNum,pageSize);
         return result;
     }

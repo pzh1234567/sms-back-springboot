@@ -35,9 +35,10 @@ public class purchaseService {
     /**
      * 功能：查询供应单列表
      **/
-    public Result getPurchaseList(String name, Integer pageNum, Integer pageSize) {
+    public Result getPurchaseList(Long id, Integer pageNum, Integer pageSize) {
         LambdaQueryWrapper<Purchase> wrapper=new LambdaQueryWrapper<>();
         wrapper.orderByDesc(Purchase::getCreateTime);
+        wrapper.like(id!=null,Purchase::getId,id);
 //        wrapper.like(name!=null,Purchase::getSupplierName,name);
 //        wrapper.like(goodName!=null,Staff::getGoodName,goodName);
         Page<Purchase> page = new Page<Purchase>(pageNum,pageSize);

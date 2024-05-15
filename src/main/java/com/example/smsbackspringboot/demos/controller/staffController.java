@@ -55,8 +55,12 @@ public class staffController {
         System.out.println("2222222" + addStaffParam);
         int count = staffService.updateStaffInfoById(addStaffParam);
         if (count > 0) {
-            return Result.success("编辑成功");
-        } else {
+            return Result.success("注册成功");
+        }else if(count == -1) {
+            return Result.error("该账号已经被注册");
+        }else if(count == -2) {
+            return Result.error("该电话已经被注册");
+        }else {
             return Result.error("编辑失败");
         }
     }
@@ -68,9 +72,11 @@ public class staffController {
 
         int count = staffService.addStaffInfo(addStaffParam);
         if (count > 0) {
-            return Result.success("添加成功");
+            return Result.success("注册成功");
         }else if(count == -1) {
             return Result.error("该账号已经被注册");
+        }else if(count == -2) {
+            return Result.error("该电话已经被注册");
         }else {
             return Result.error("添加失败");
         }
@@ -82,7 +88,7 @@ public class staffController {
     @PostMapping("/login")
     public Result Login(@RequestBody LoginParam loginParam){
         Staff staff = staffService.getStaffInfoByAccount(loginParam.getAccount());
-//        System.out.println(staff.getPassword());
+        System.out.println(staff.getPassword());
         if(loginParam.getPassword().equals( staff.getPassword())){
             StpUtil.login(staff.getAccount());
             return Result.success(StpUtil.getTokenValue());
@@ -116,18 +122,21 @@ public class staffController {
     @ApiOperation(value = "注册")
     @PostMapping("/user/staff/staffRegister")
     public Result resultRegister(@RequestBody AddStaffParam addStaffParam){
+        System.out.println("add"+addStaffParam);
         int count = staffService.addStaffInfo(addStaffParam);
         if (count > 0) {
             return Result.success("注册成功");
         }else if(count == -1) {
             return Result.error("该账号已经被注册");
+        }else if(count == -2) {
+            return Result.error("该电话已经被注册");
         }else {
             return Result.error("注册失败");
         }
     }
 
     @ApiOperation(value="根据id查询员工信息")
-    @GetMapping("/user/staff/getStaffInfoById")
+    @GetMapping("/user/staff/getStaffInfoById/{id}")
     public Result getStaffInfoById(@PathVariable Long id){
         Staff staff = staffService.getStaffInfoById(id);
         return Result.success(staff);

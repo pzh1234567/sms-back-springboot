@@ -16,8 +16,8 @@ public class purchaseController {
 
     @ApiOperation(value = "获取供应单列表")
     @GetMapping("/purchase/getPurchaseList")
-    public Result getPurchaseList(String name, Integer pageNum, Integer pageSize) {
-        Result result = purchaseService.getPurchaseList(name, pageNum, pageSize);
+    public Result getPurchaseList(Long id, Integer pageNum, Integer pageSize) {
+        Result result = purchaseService.getPurchaseList(id, pageNum, pageSize);
         return result;
     }
 

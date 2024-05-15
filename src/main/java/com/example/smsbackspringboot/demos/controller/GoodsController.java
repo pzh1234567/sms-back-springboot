@@ -80,4 +80,11 @@ public class GoodsController {
         Result result = goodsService.getTypeSold();
         return result;
     }
+
+    @ApiOperation(value="获取销量前三的商品")
+    @GetMapping("/good/gethighsellingGood")
+    public Result gethighsellingGood(){
+        Result result = goodsService.gethighsellingGood();
+        return result;
+    }
 }

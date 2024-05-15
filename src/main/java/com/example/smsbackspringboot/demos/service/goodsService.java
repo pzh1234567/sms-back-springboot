@@ -145,4 +145,14 @@ public class goodsService {
         return Result.success(typeSolds);
     }
 
+
+    public Result gethighsellingGood(){
+        // 创建 QueryWrapper 对象
+        QueryWrapper<Goods> wrapper = new QueryWrapper<>();
+        // 设置查询条件，按销量降序排列
+        wrapper.orderByDesc("sold").last("limit 3");
+        // 执行查询并返回结果
+        List<Goods> goodsList = goodsMapper.selectList(wrapper);
+        return Result.success(goodsList);
+    }
 }

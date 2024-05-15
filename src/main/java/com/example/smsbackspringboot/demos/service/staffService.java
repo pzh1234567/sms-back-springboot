@@ -98,6 +98,11 @@ public class staffService {
         return count;
     };
 
+    /**
+     * 根据staffId删除
+     * @param staffId
+     * @return
+     */
     public int deletedStaffRoleByStaffId(Long staffId){
         LambdaQueryWrapper<StaffRole> wrapper=new LambdaQueryWrapper<>();
         wrapper.eq(staffId!=null,StaffRole::getStaffId,staffId);
@@ -110,9 +115,26 @@ public class staffService {
      * 根据Id编辑员工
      */
     public int updateStaffInfoById(AddStaffParam addStaffParam){
+        LambdaQueryWrapper<Staff> staffWrapper=new LambdaQueryWrapper<>();
+        staffWrapper.eq(addStaffParam.getAccount()!=null,Staff::getAccount,addStaffParam.getAccount());
+        staffWrapper.ne(addStaffParam.getId()!=null, Staff::getId,addStaffParam.getId());
+        Staff checked = staffMapper.selectOne(staffWrapper);
+        if(checked !=null){
+            return -1;
+        }
+        LambdaQueryWrapper<Staff> staffWrapper2=new LambdaQueryWrapper<>();
+        staffWrapper2.eq(addStaffParam.getPhone()!=null,Staff::getPhone,addStaffParam.getPhone());
+        staffWrapper2.ne(addStaffParam.getId()!=null, Staff::getId,addStaffParam.getId());
+        Staff check2 = staffMapper.selectOne(staffWrapper2);
+        if (check2 != null){
+            return -2;
+        }
         Staff staff = BeanCopyUtils.copyBean(addStaffParam,Staff.class);
         int count = staffMapper.updateById(staff);
-        int flag = updateStaffRoleByStaffId(addStaffParam.getId(),addStaffParam.getRoleId());
+        int flag=1;
+        if(addStaffParam.getRoleId()!=null){
+            flag = updateStaffRoleByStaffId(addStaffParam.getId(),addStaffParam.getRoleId());
+        }
         System.out.println(count);
         return flag*count;
     }
@@ -150,6 +172,15 @@ public class staffService {
         Staff checked = staffMapper.selectOne(staffWrapper);
         if(checked !=null){
             return -1;
+        }
+//        System.out.println("phone"+addStaffParam.getPhone());
+        if(addStaffParam.getPhone()!=null){
+            LambdaQueryWrapper<Staff> staffWrapper2=new LambdaQueryWrapper<>();
+            staffWrapper2.eq(addStaffParam.getPhone()!=null,Staff::getPhone,addStaffParam.getPhone());
+            Staff check2 = staffMapper.selectOne(staffWrapper2);
+            if (check2 != null){
+                return -2;
+            }
         }
         Staff staff = BeanCopyUtils.copyBean(addStaffParam,Staff.class);
         int count = staffMapper.insert(staff);
