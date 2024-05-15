@@ -125,4 +125,11 @@ public class staffController {
             return Result.error("注册失败");
         }
     }
+
+    @ApiOperation(value="根据id查询员工信息")
+    @GetMapping("/user/staff/getStaffInfoById")
+    public Result getStaffInfoById(@PathVariable Long id){
+        Staff staff = staffService.getStaffInfoById(id);
+        return Result.success(staff);
+    }
 }

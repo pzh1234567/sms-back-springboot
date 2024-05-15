@@ -14,9 +14,11 @@ import java.util.List;
 public class AddOrderParam {
     private List<GoodItemParam> goodsList;
     private String customerName;
+    private Long customerId;
+    private Double totalSold;
     private int orderStatus;
     private String detail;
     private String createTime;
-    private String payTime;
+    private String paytime;
 }
 

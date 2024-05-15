@@ -142,17 +142,23 @@ public class purchaseService {
         int flag;
         for (GoodsItemVo goodsItemVo:purchaseInfoVo.getGoodsList()){
             Goods goods = BeanCopyUtils.copyBean(goodsItemVo,Goods.class);
-            goods.setGoodInventory(goodsItemVo.getCount());
-            goods.setGoodTotal(goodsItemVo.getCount());
-            goods.setGoodType(goodsItemVo.getGoodType());
-            goods.setStackingCount(0);
-            goods.setSold(0);
-            goods.setGoodStatus(0);
-            flag = goodsMapper.insert(goods);
+
+            goods.setSupplierId(supplier.getId());
+            System.out.println(goods.getGoodInventory());
+            if(goods.getGoodId() == null){
+                goods.setGoodInventory(goodsItemVo.getCount());
+                goods.setGoodTotal(goodsItemVo.getCount());
+                goods.setStackingCount(0);
+                goods.setSold(0);
+                goods.setGoodStatus(0);
+                flag = goodsMapper.insert(goods);
+                Long id = goods.getGoodId();
+            }
+            System.out.println(goods);
             Long id = goods.getGoodId();
+            flag = goodsMapper.updateById(goods);
 //            System.out.println(goodsItemVo.getCount());
             PurchaseGoods purchaseGoods = new PurchaseGoods();
-//            System.out.println(id);
             purchaseGoods.setGoodId(id);
             purchaseGoods.setPurchaseId(purchaseId);
             purchaseGoods.setGoodCount(goodsItemVo.getCount());
@@ -163,9 +169,25 @@ public class purchaseService {
         return count;
     }
 
+    /**
+     * 编辑供应单信息
+     * @param purchase
+     * @return
+     */
     public int editPurchase(Purchase purchase){
         int count = purchaseMapper.updateById(purchase);
         return count;
     }
+
+    /**
+     * 删除供应单信息
+     * @param id
+     * @return
+     */
+    public int deletePurchase(Long id){
+        int count = purchaseMapper.deleteById(id);
+        return count;
+    }
+
 
 }

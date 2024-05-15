@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.smsbackspringboot.demos.common.Result;
 import com.example.smsbackspringboot.demos.entiy.Bulletin;
 import com.example.smsbackspringboot.demos.entiy.Goods;
+import com.example.smsbackspringboot.demos.entiy.Order;
 import com.example.smsbackspringboot.demos.mapper.bulletinMapper;
 import com.example.smsbackspringboot.demos.vo.commom.PageVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,5 +67,21 @@ public class bulltinService {
         }else {
             return Result.success("添加公告信息失败");
         }
+    }
+
+    /**
+     * 查询每日发布的公告
+     * @param date
+     * @param status
+     * @return
+     */
+    public Result getBulletinListByDay(String date, Integer status) {
+        LambdaQueryWrapper<Bulletin> wrapper=new LambdaQueryWrapper<>();
+        wrapper.eq(status!=null,Bulletin::getStatus,status);
+        wrapper.like(date!=null,Bulletin::getPublishTime,date);
+        wrapper.orderByDesc(Bulletin::getPublishTime);
+//        查询发布人
+        List<Bulletin> bulletinList = bulletinMapper.selectList(wrapper);
+        return Result.success(bulletinList);
     }
 }

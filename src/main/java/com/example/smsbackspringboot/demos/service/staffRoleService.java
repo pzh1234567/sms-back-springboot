@@ -36,6 +36,18 @@ public class staffRoleService {
     }
 
     /**
+     * 根据用户id获取角色Id
+     * @param staffId
+     * @return
+     */
+    public StaffRole getStaffRoleByStaffId(Long staffId){
+        LambdaQueryWrapper<StaffRole> wrapper=new LambdaQueryWrapper<>();
+        wrapper.eq(staffId!=null,StaffRole::getStaffId,staffId);
+        StaffRole staffRole = staffRoleMapper.selectOne(wrapper);
+        return staffRole;
+    }
+
+    /**
      * 通过staffRole里的staffid获取stafflist
      * @param staffRoleList
      * @return

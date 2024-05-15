@@ -48,4 +48,12 @@ public class bulletinController {
         Result result = bulltinService.addBulletinInfo(bulletin);
         return result;
     }
+    @ApiOperation(value = "获取每日公告列表")
+    @GetMapping("/bulletin/getBulletinListByDay")
+    public Result getBulletinListByDay(String date, Integer status){
+        System.out.println("date" +date);
+//        System.out.println("status" +status);
+        Result result = bulltinService.getBulletinListByDay(date, status);
+        return result;
+    }
 }

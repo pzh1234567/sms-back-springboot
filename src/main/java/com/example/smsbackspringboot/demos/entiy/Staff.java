@@ -23,6 +23,7 @@ public class Staff {
     private String birth;
     private String phone;
     private String idnumber;
+    private String email;
     @TableField(value = "CreditcardNumber")
     private String CreditcardNumber;
     private Double salary;

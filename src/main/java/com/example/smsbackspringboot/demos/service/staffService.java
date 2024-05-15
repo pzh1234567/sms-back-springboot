@@ -92,14 +92,16 @@ public class staffService {
      * 根据Id删除员工
      */
     public int deletedStaffById(Long id){
+        System.out.println("id"+id);
         int count = staffMapper.deleteById(id);
         int flag = deletedStaffRoleByStaffId(id);
-        return count*flag;
+        return count;
     };
 
     public int deletedStaffRoleByStaffId(Long staffId){
         LambdaQueryWrapper<StaffRole> wrapper=new LambdaQueryWrapper<>();
         wrapper.eq(staffId!=null,StaffRole::getStaffId,staffId);
+        System.out.println(wrapper);
         int flag = staffRoleMapper.delete(wrapper);
         return flag;
     }

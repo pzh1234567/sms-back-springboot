@@ -22,7 +22,7 @@ public class Bulletin {
     //发布人姓名
     private String staffName;
     private String content;
-    private Integer status;
+    private int status;
     @TableField(value = "createTime")
     private String createTime;
     @TableField(value = "updateTime")

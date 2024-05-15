@@ -13,4 +13,5 @@ import javax.persistence.Entity;
 public class GoodItemParam {
     private Long goodId;
     private int num;
+    private Double price;
 }

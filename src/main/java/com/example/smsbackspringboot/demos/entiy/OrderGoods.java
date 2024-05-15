@@ -22,6 +22,7 @@ public class OrderGoods {
     private Long OrderId;
     private Long goodId;
     private int goodCount;
+    private Double goodPrice;
 //    private Double actualPayment;
     @TableLogic(value = "0", delval = "1")
     private int deleted;

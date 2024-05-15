@@ -3,6 +3,7 @@ package com.example.smsbackspringboot.demos.controller;
 import com.example.smsbackspringboot.demos.common.Result;
 import com.example.smsbackspringboot.demos.entiy.Role;
 import com.example.smsbackspringboot.demos.entiy.Staff;
+import com.example.smsbackspringboot.demos.entiy.StaffRole;
 import com.example.smsbackspringboot.demos.service.rolePowerService;
 import com.example.smsbackspringboot.demos.service.roleService;
 import com.example.smsbackspringboot.demos.service.staffRoleService;
@@ -129,6 +130,14 @@ public class roleController {
         }else {
             return Result.error("添加权限失败");
         }
+    }
+
+    @ApiOperation(value="根据员工id获取角色信息")
+    @GetMapping("/user/role/getRoleByStaffId/{id}")
+    public Result getRolebyStaffId(@PathVariable Long id){
+        StaffRole staffRole = staffRoleService.getStaffRoleByStaffId(id);
+        Role role = roleService.getRoleById(staffRole.getRoleId());
+        return Result.success(role);
     }
 
 }

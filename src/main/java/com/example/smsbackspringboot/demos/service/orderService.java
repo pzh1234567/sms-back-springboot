@@ -79,15 +79,9 @@ public class orderService {
             wrapper.eq(id!=null,OrderGoods::getOrderId,id);
             List<OrderGoods> orderGoodsList = orderGoodsMapper.selectList(wrapper);
             List<GoodsItemVo> goodsList = getGoodsItem(orderGoodsList);
-            OrderInfoVo orderInfo = new OrderInfoVo();
+            OrderInfoVo orderInfo = BeanCopyUtils.copyBean(order,OrderInfoVo.class);
             orderInfo.setGoodsList(goodsList);
             orderInfo.setOrderId(id);
-            orderInfo.setCustomerName(order.getCustomerName());
-            orderInfo.setOrderStatus(order.getOrderStatus());
-            orderInfo.setCreatetime(order.getCreatetime());
-            orderInfo.setPaytime(order.getPaytime());
-            orderInfo.setUpdatetime(order.getUpdatetime());
-            orderInfo.setDetail(order.getDetail());
             orderInfoList.add(orderInfo);
         }
         return orderInfoList;
@@ -100,12 +94,14 @@ public class orderService {
         List<GoodsItemVo> goodsList= new ArrayList<>();
         if(orderGoodsList != null){
             for (OrderGoods orderGoods : orderGoodsList) {
+                Double price = orderGoods.getGoodPrice();
                 Long goodId = orderGoods.getGoodId();
                 Integer count = orderGoods.getGoodCount();
                 // 对goodId进行处理
                 System.out.println("GoodId: " + goodId);
                 Goods goods = getGoodById(goodId);
                 GoodsItemVo goodsItem = BeanCopyUtils.copyBean(goods,GoodsItemVo.class);
+                goodsItem.setGoodPrice(price);
                 goodsItem.setCount(count);
                 goodsList.add(goodsItem);
             }
@@ -193,9 +189,19 @@ public class orderService {
         return saleDetailVo;
     }
 
+    /**
+     * 根据商品id获取利润
+     * @param goodsId
+     * @return
+     */
     public Double getprofitbyGoodId(Long goodsId){
         Goods goods = goodsMapper.selectById(goodsId);
         Double profit = goods.getGoodPrice() - goods.getGoodCost();
         return profit;
+    }
+
+    public int deleteOrderByid(Long id){
+        int count = orderMapper.deleteById(id);
+        return count;
     }
 }

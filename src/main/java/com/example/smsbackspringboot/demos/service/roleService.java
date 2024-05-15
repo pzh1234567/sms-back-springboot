@@ -45,6 +45,18 @@ public class roleService {
     }
 
     /**
+     * 根据id获取角色信息
+     * @param id
+     * @return
+     */
+    public Role getRoleById(Long id) {
+        LambdaQueryWrapper<Role> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(id != null, Role::getRoleId, id);
+        Role role = roleMapper.selectOne(wrapper);
+        return role;
+    }
+
+    /**
      * 添加角色
      * @param role
      * @return

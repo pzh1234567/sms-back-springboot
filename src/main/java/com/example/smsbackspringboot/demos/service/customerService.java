@@ -69,17 +69,29 @@ public class customerService {
     /**
      * 功能：更新顾客信息
      **/
-    public Result updateCustomerInfoById(Customer customer){
+    public int updateCustomerInfoById(Customer customer){
+        //判断电话号码是否存在
+        LambdaQueryWrapper<Customer> wrapper=new LambdaQueryWrapper<>();
+        wrapper.eq(customer.getCustomerPhone()!=null,Customer::getCustomerPhone,customer.getCustomerPhone());
+        wrapper.ne(customer.getCustomerId()!=null,Customer::getCustomerId,customer.getCustomerId());
+        Customer check = customerMapper.selectOne(wrapper);
         System.out.println("customerList:"+customer);
         int count = customerMapper.updateById(customer);
-        return Result.success(count);
+        return count;
     }
 
     /**
      * 功能：新增会员信息
      **/
     public Result addCustomerInfo(Customer customer) {
-        System.out.println("1111111");
+        //判断电话号码是否存在
+        LambdaQueryWrapper<Customer> wrapper=new LambdaQueryWrapper<>();
+        wrapper.eq(customer.getCustomerPhone()!=null,Customer::getCustomerPhone,customer.getCustomerPhone());
+        Customer check = customerMapper.selectOne(wrapper);
+//        System.out.println("1111111");
+        if(check!=null){
+            return Result.error("电话号码已经被注册");
+        }
         int count = customerMapper.insert(customer);
         System.out.println(customer.getCustomerId());
         return Result.success(count);

@@ -1,9 +1,6 @@
 package com.example.smsbackspringboot.demos.entiy;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -16,6 +13,7 @@ public class Goods {
     @TableId(type = IdType.AUTO)
     private Long goodId;
 
+    private Long supplierId;
     private String goodName;
     private int goodType;
     private String goodDetail;
@@ -24,6 +22,7 @@ public class Goods {
     private int goodTotal;//总量
     private int goodInventory; //库存
     private int goodStatus;
+    @TableField(value = "img")
     private String goodImg;
     private String stackingTime;
     private int stackingCount;

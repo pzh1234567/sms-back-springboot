@@ -17,6 +17,7 @@ public class Order {
     private Long orderId;
     private String customerName;
     private int orderStatus;
+    private Double totalPrice;
     @TableField(value = "createTime")
     private String createtime;
     @TableField(value = "payTime")

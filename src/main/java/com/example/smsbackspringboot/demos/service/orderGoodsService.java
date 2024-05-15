@@ -25,11 +25,12 @@ public class orderGoodsService {
      * @param goodsCount
      * @return
      */
-    public int addOrderGoods(Long orderId,Long goodsId, int goodsCount){
+    public int addOrderGoods(Long orderId,Long goodsId, int goodsCount,Double price){
         OrderGoods orderGoods = new OrderGoods();
         orderGoods.setGoodId(goodsId);
         orderGoods.setGoodCount(goodsCount);
         orderGoods.setOrderId(orderId);
+        orderGoods.setGoodPrice(price);
         int count = orderGoodsMapper.insert(orderGoods);
         return count;
     }

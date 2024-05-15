@@ -31,8 +31,11 @@ public class customerController {
     @PutMapping("/customer/updateCustomer")
     public Result UpdataCustomerInfoById(@RequestBody Customer customer){
         System.out.println("customerList:"+customer);
-        Result result =customerService.updateCustomerInfoById(customer);
-        return result;
+        int result =customerService.updateCustomerInfoById(customer);
+        if(result>0){
+            return Result.success("更新成功");
+        }
+        return Result.error("更新失败");
     }
 
     /**

@@ -65,4 +65,19 @@ public class GoodsController {
         Result result = goodsService.updateGoodsInfoById(goods);
         return result;
     }
+
+    @ApiOperation(value="获取库存小于10的商品")
+    @GetMapping("/good/getGoodItembyInventory")
+    public Result getGoodsByInventory(){
+        Result result = goodsService.getGoodsByInventory();
+        return result;
+    }
+
+    @ApiOperation(value="获取不同种类商品的销量")
+    @GetMapping("/good/getTypeSold")
+    public Result getTypeSold(){
+//        System.out.println("获取不同种类商品的销量");
+        Result result = goodsService.getTypeSold();
+        return result;
+    }
 }
