@@ -55,7 +55,7 @@ public class staffController {
         System.out.println("2222222" + addStaffParam);
         int count = staffService.updateStaffInfoById(addStaffParam);
         if (count > 0) {
-            return Result.success("注册成功");
+            return Result.success("编辑成功");
         }else if(count == -1) {
             return Result.error("该账号已经被注册");
         }else if(count == -2) {
@@ -89,6 +89,10 @@ public class staffController {
     public Result Login(@RequestBody LoginParam loginParam){
         Staff staff = staffService.getStaffInfoByAccount(loginParam.getAccount());
         System.out.println(staff.getPassword());
+//        System.out.println("status"+staff.getStatus());
+        if(staff.getStatus() == 2){
+            return Result.error("你已经离职无法登录系统");
+        }
         if(loginParam.getPassword().equals( staff.getPassword())){
             StpUtil.login(staff.getAccount());
             return Result.success(StpUtil.getTokenValue());

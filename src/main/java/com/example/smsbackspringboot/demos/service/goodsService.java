@@ -131,7 +131,7 @@ public class goodsService {
     public Result getTypeSold(){
         List<Integer> typeSolds = new ArrayList<>();
         int i = 1;
-        while(i <= 8) {
+        while(i <= 7) {
             LambdaQueryWrapper<Goods> wrapper=new LambdaQueryWrapper<>();
             wrapper.eq(Goods::getGoodType,i);
             List<Goods> goodsList = goodsMapper.selectList(wrapper);

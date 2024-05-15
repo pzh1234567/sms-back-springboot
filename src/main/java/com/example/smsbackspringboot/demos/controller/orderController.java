@@ -37,10 +37,10 @@ public class orderController {
 
     @ApiOperation(value = "获取订单列表")
     @GetMapping("/order/getOrderList")
-    public Result getOrderList(String userName, Long orderId, Integer pageNum, Integer pageSize, Integer status) {
+    public Result getOrderList(String userName, Long orderId, Integer pageNum, Integer pageSize, Integer status, String startTime, String endTime) {
         System.out.println("111111111111orderList:1111111111111111111111111111111111111111111");
 //        List<Long> idList = customerService.getCustomerByName(customerName);
-        Result result = orderService.getOrderList(orderId, userName, pageNum, pageSize, status);
+        Result result = orderService.getOrderList(orderId, userName, pageNum, pageSize, status,startTime,endTime);
         System.out.println("22222222222222222222222222222222222goodList:" + result);
         return result;
 
@@ -55,7 +55,7 @@ public class orderController {
         order.setCreatetime(orderInfo.getCreateTime());
         order.setTotalPrice(orderInfo.getTotalSold());
         System.out.println("payTime"+orderInfo.getPaytime());
-        order.setPaytime(orderInfo.getPaytime());
+//        order.setPaytime(orderInfo.getPaytime());
         Long orderId = orderService.addOrder(order);
         int result = 1;
         if(orderInfo.getCustomerId()!=null){
@@ -79,13 +79,13 @@ public class orderController {
             //添加订单商品表信息
             int count = orderGoodsService.addOrderGoods(orderId,goodsId,num,price);
             //减少对应商品库存
-            int flag = goodsService.reduceGoodsInventory(goodsId, num);
-            result = count * result *flag;
+//            int flag = goodsService.reduceGoodsInventory(goodsId, num);
+            result = count * result ;
         }
         if(result == 0){
             Result.error("添加订单失败");
         }
-        return Result.success("添加订单成功");
+        return Result.success(orderId);
     }
 
     @ApiOperation(value = "查询每月商品销量")
@@ -104,5 +104,12 @@ public class orderController {
         }else {
             return Result.error("订单删除失败");
         }
+    }
+
+    @ApiOperation(value="编辑订单信息")
+    @PutMapping("/order/updateOrder")
+    public Result updataOrder(@RequestBody Order order){
+        Result result = orderService.updataOrder(order);
+        return result;
     }
 }

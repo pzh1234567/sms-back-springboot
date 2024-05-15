@@ -17,6 +17,7 @@ import com.example.smsbackspringboot.demos.vo.commom.GoodsItemVo;
 import com.example.smsbackspringboot.demos.vo.commom.OrderInfoVo;
 import com.example.smsbackspringboot.demos.vo.commom.PageVo;
 import com.example.smsbackspringboot.demos.vo.commom.SaleDetailVo;
+//import com.sun.org.apache.xpath.internal.operations.String;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,16 +46,19 @@ public class orderService {
      * @return
      */
 
-    public Result getOrderList(Long orderId,String name, Integer pageNum, Integer pageSize,Integer status) {
+    public Result getOrderList(Long orderId, String name, Integer pageNum, Integer pageSize, Integer status, String startTime, String endTime) {
         LambdaQueryWrapper<Order> wrapper=new LambdaQueryWrapper<>();
         wrapper.orderByDesc(Order::getCreatetime);
         //根据会员名字查询
         wrapper.like(name!=null,Order::getCustomerName,name);
         //根据订单id查询
-        wrapper.like(orderId!=null,Order::getOrderId,orderId);
+        wrapper.eq(orderId!=null,Order::getOrderId,orderId);
         //根据状态查询
         wrapper.eq(status!=null,Order::getOrderStatus,status);
         //分页操作
+        System.out.println("startime"+startTime+"endtime"+endTime);
+//        if(startTime!='')
+        wrapper.between(startTime!=null&&endTime!=null,Order::getCreatetime,startTime,endTime);
         Page<Order> page = new Page<Order>(pageNum,pageSize);
         IPage<Order> orderIPage = orderMapper.selectPage(page, wrapper);
         List<Order> result = orderIPage.getRecords();
@@ -147,7 +151,8 @@ public class orderService {
             System.out.println("月份：" + month);
             String ym =year+ "-"+month+"-";
             LambdaQueryWrapper<Order> wrapper=new LambdaQueryWrapper<>();
-            wrapper.like(year!=null,Order::getCreatetime, ym);
+            wrapper.like(year!=null,Order::getPaytime, ym);
+            wrapper.eq(Order::getOrderStatus,1);
             List<Order> orderList = orderMapper.selectList(wrapper);
             System.out.println(orderList);
             SaleDetailVo saleDetailVo = new SaleDetailVo();
@@ -203,5 +208,19 @@ public class orderService {
     public int deleteOrderByid(Long id){
         int count = orderMapper.deleteById(id);
         return count;
+    }
+
+    /**
+     * 编辑订单信息
+     * @param order
+     * @return
+     */
+    public Result updataOrder(Order order){
+        int count = orderMapper.updateById(order);
+        if(count > 0){
+            return Result.success("编辑成功");
+        }else {
+            return Result.error("编辑失败");
+        }
     }
 }

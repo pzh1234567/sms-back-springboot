@@ -66,6 +66,10 @@ public class customerController {
     @GetMapping("/customer/getCustomerInfoByPhone/{phone}")
     public Result getCustomerInfoByPhone(@PathVariable String phone){
         Customer customer = customerService.getCustomerByPhone(phone);
-        return Result.success(customer);
+        if(customer !=null){
+            return Result.success(customer);
+        }else {
+            return Result.error("用户不存在");
+        }
     }
 }
