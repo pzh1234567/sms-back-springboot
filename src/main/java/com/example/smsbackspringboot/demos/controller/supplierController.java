@@ -48,4 +48,15 @@ public class supplierController {
         Result result = supplierService.getSupplierListByName(name);
         return  result;
     }
+
+    @ApiOperation(value="删除供应商")
+    @DeleteMapping("/supplier/deleteSupplierById/{id}")
+    public Result deleteSupplierById(@PathVariable Long id){
+        int count = supplierService.deleteSupplier(id);
+        if (count> 0){
+            return Result.success("删除成功");
+        }else {
+            return Result.error("删除失败");
+        }
+    }
 }

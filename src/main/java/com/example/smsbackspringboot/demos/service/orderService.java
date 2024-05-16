@@ -223,4 +223,9 @@ public class orderService {
             return Result.error("编辑失败");
         }
     }
+
+    public Order getOrderbyId(Long id){
+        Order order = orderMapper.selectById(id);
+        return order;
+    }
 }

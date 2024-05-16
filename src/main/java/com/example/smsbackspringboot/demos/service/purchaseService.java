@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class purchaseService {
@@ -32,32 +33,33 @@ public class purchaseService {
 
     @Autowired
     supplierMapper supplierMapper;
+
     /**
      * 功能：查询供应单列表
      **/
     public Result getPurchaseList(Long id, Integer pageNum, Integer pageSize) {
-        LambdaQueryWrapper<Purchase> wrapper=new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<Purchase> wrapper = new LambdaQueryWrapper<>();
         wrapper.orderByDesc(Purchase::getCreateTime);
-        wrapper.like(id!=null,Purchase::getId,id);
+        wrapper.like(id != null, Purchase::getId, id);
 //        wrapper.like(name!=null,Purchase::getSupplierName,name);
 //        wrapper.like(goodName!=null,Staff::getGoodName,goodName);
-        Page<Purchase> page = new Page<Purchase>(pageNum,pageSize);
+        Page<Purchase> page = new Page<Purchase>(pageNum, pageSize);
 //        System.out.println("2222222"+goodType);
         IPage<Purchase> purchaseIPage = purchaseMapper.selectPage(page, wrapper);
         List<Purchase> result = purchaseIPage.getRecords();
         //根据供应单信息获取商品信息
         List<PurchaseInfoVo> purchaseInfoVoList = getPurchaseInfoByPurchase(result);
         System.out.println(result);
-        return Result.success(new PageVo(purchaseInfoVoList,purchaseIPage.getTotal()));
+        return Result.success(new PageVo(purchaseInfoVoList, purchaseIPage.getTotal()));
     }
 
-    private List<PurchaseInfoVo> getPurchaseInfoByPurchase(List<Purchase> purchaseList){
+    private List<PurchaseInfoVo> getPurchaseInfoByPurchase(List<Purchase> purchaseList) {
         List<PurchaseInfoVo> purchaseInfoVoList = new ArrayList<>();
-        for (Purchase purchase:purchaseList){
+        for (Purchase purchase : purchaseList) {
 //           //获取供应单id
             Long id = purchase.getId();
             LambdaQueryWrapper<PurchaseGoods> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(id!=null,PurchaseGoods::getPurchaseId,id);
+            wrapper.eq(id != null, PurchaseGoods::getPurchaseId, id);
             List<PurchaseGoods> purchaseGoodsList = purchaseGoodsMapper.selectList(wrapper);
             List<GoodsItemVo> goodsList = getGoodsItem(purchaseGoodsList);
             PurchaseInfoVo purchaseInfoVo = BeanCopyUtils.copyBean(purchase, PurchaseInfoVo.class);
@@ -71,27 +73,26 @@ public class purchaseService {
 
 
     /**
-     *
      * @param purchaseGoodsList
      * @return
      */
-    public List<GoodsItemVo> getGoodsItem(List<PurchaseGoods> purchaseGoodsList){
-        List<GoodsItemVo> goodsList= new ArrayList<>();
-        if(purchaseGoodsList != null){
+    public List<GoodsItemVo> getGoodsItem(List<PurchaseGoods> purchaseGoodsList) {
+        List<GoodsItemVo> goodsList = new ArrayList<>();
+        if (purchaseGoodsList != null) {
             for (PurchaseGoods purchaseGoods : purchaseGoodsList) {
                 Long goodId = purchaseGoods.getGoodId();
                 Integer count = purchaseGoods.getGoodCount();
                 // 对goodId进行处理
                 System.out.println("GoodId: " + goodId);
                 Goods goods = getGoodById(goodId);
-                GoodsItemVo goodsItem = BeanCopyUtils.copyBean(goods,GoodsItemVo.class);
+                GoodsItemVo goodsItem = BeanCopyUtils.copyBean(goods, GoodsItemVo.class);
                 goodsItem.setCount(purchaseGoods.getGoodCount());
                 goodsItem.setCount(count);
                 goodsItem.setGoodId(goodId);
                 goodsItem.setGoodCost(purchaseGoods.getGoodCost());
                 goodsList.add(goodsItem);
             }
-        }else {
+        } else {
             System.out.println("找不到订单商品");
         }
         return goodsList;
@@ -99,6 +100,7 @@ public class purchaseService {
 
     /**
      * 根据id条件获取商品信息
+     *
      * @param id
      * @return
      */
@@ -109,47 +111,50 @@ public class purchaseService {
 
     /**
      * 根据id获取供应商信息
+     *
      * @param id
      * @return
      */
-    public Supplier getSupplier(Long id){
+    public Supplier getSupplier(Long id) {
         Supplier supplier = supplierMapper.selectById(id);
         return supplier;
     }
 
     /**
      * 根据name获取供应商信息
+     *
      * @param name
      * @return
      */
-    public Supplier getSupplierName(String name){
+    public Supplier getSupplierName(String name) {
         LambdaQueryWrapper<Supplier> wrapper = new LambdaQueryWrapper();
-        wrapper.eq(name!=null,Supplier::getName,name);
+        wrapper.eq(name != null, Supplier::getName, name);
         Supplier supplier = supplierMapper.selectOne(wrapper);
         return supplier;
     }
 
     /**
      * 进货
+     *
      * @param purchaseInfoVo
      * @return
      */
-    public int addPurchase(PurchaseInfoVo purchaseInfoVo){
-        Purchase purchase = BeanCopyUtils.copyBean(purchaseInfoVo,Purchase.class);
+    public int addPurchase(PurchaseInfoVo purchaseInfoVo) {
+        Purchase purchase = BeanCopyUtils.copyBean(purchaseInfoVo, Purchase.class);
         Supplier supplier = getSupplierName(purchaseInfoVo.getSupplierName());
         purchase.setSupplierId(supplier.getId());
         int count = purchaseMapper.insert(purchase);
         Long purchaseId = purchase.getId();
         int flag;
-        for (GoodsItemVo goodsItemVo:purchaseInfoVo.getGoodsList()){
-            Goods goods = BeanCopyUtils.copyBean(goodsItemVo,Goods.class);
+        for (GoodsItemVo goodsItemVo : purchaseInfoVo.getGoodsList()) {
+            Goods goods = BeanCopyUtils.copyBean(goodsItemVo, Goods.class);
 
             goods.setSupplierId(supplier.getId());
             System.out.println(goods.getGoodInventory());
-            if(goods.getGoodId() == null){
-                goods.setGoodInventory(goodsItemVo.getCount());
-                goods.setGoodTotal(goodsItemVo.getCount());
-                goods.setStackingCount(0);
+            if (goods.getGoodId() == null) {
+//                goods.setGoodInventory(goodsItemVo.getCount());
+//                goods.setGoodTotal(goodsItemVo.getCount());
+//                goods.setStackingCount(0);
                 goods.setSold(0);
                 goods.setGoodStatus(0);
                 flag = goodsMapper.insert(goods);
@@ -165,30 +170,66 @@ public class purchaseService {
             purchaseGoods.setGoodCount(goodsItemVo.getCount());
             purchaseGoods.setGoodCost(goodsItemVo.getGoodCost());
             int tmp = purchaseGoodsMapper.insert(purchaseGoods);
-            count = count*flag*tmp;
+            count = count * flag * tmp;
         }
         return count;
     }
 
     /**
      * 编辑供应单信息
+     *
      * @param purchase
      * @return
      */
-    public int editPurchase(Purchase purchase){
+    public int editPurchase(Purchase purchase) {
         int count = purchaseMapper.updateById(purchase);
         return count;
     }
 
     /**
      * 删除供应单信息
+     *
      * @param id
      * @return
      */
-    public int deletePurchase(Long id){
+    public int deletePurchase(Long id) {
         int count = purchaseMapper.deleteById(id);
         return count;
     }
 
+
+    /**
+     * 获取所有供应单列表
+     *
+     * @return
+     */
+    public List<PurchaseInfoVo> getAllPurchaseList() {
+        List<Purchase> purchaseList = purchaseMapper.selectList(null);
+        List<PurchaseInfoVo> purchaseInfoVoList = getPurchaseInfoByPurchase(purchaseList);
+        return purchaseInfoVoList;
+    }
+
+    /**
+     * 改变到货状态
+     * @param purchaseId
+     * @return
+     */
+    public Result changePurchaseStatus(Long purchaseId) {
+        LambdaQueryWrapper<PurchaseGoods> wrapper = new LambdaQueryWrapper<>();
+        List<PurchaseGoods> purchaseGoodsList = purchaseGoodsMapper.selectList(wrapper);
+        for (PurchaseGoods purchaseGoods : purchaseGoodsList) {
+            Long goodId = purchaseGoods.getGoodId();
+            int num = purchaseGoods.getGoodCount();
+//            LambdaQueryWrapper<Goods> goodWrapper = new LambdaQueryWrapper<>();
+            Goods goods = goodsMapper.selectById(goodId);
+            goods.setGoodInventory(goods.getGoodInventory() + num);
+            goods.setGoodTotal(goods.getGoodTotal() + num);
+            int flag = goodsMapper.updateById(goods);
+        }
+        Purchase purchase = purchaseMapper.selectById(purchaseId);
+        purchase.setStatus(1);
+        int count = purchaseMapper.updateById(purchase);
+        return Result.success("进货成功");
+    }
 
 }

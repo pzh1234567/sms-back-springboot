@@ -54,4 +54,11 @@ public class purchaseController {
             return Result.error("删除供应单失败");
         }
     }
+
+    @ApiOperation(value="改变供应单状态")
+    @GetMapping("/purchase/changePurchaseStatus")
+    public Result changePurchaseStatus(Long id){
+        Result result = purchaseService.changePurchaseStatus(id);
+        return result;
+    }
 }

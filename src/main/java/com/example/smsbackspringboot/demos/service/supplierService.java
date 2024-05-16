@@ -66,4 +66,9 @@ public class supplierService {
         return count;
     }
 
+    public int deleteSupplier(Long id){
+        int count = supplierMapper.deleteById(id);
+        return count;
+    }
+
 }
